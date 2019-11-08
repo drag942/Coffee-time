@@ -4,17 +4,18 @@ import {
     Image,
     ImageStyle,
     ImageURISource,
+    Insets,
     TextInput,
-    TextInputProperties,
-    TextStyle, TouchableOpacity,
+    TextInputProps,
+    TextStyle,
+    TouchableOpacity,
     View,
-    ViewStyle,
-    Insets
+    ViewStyle
 } from "react-native";
 import {Colors, Fonts, isIos} from "../../core/theme";
 import {Ref, styleSheetCreate, styleSheetFlatten} from "../utils";
 
-interface IProps extends TextInputProperties {
+interface IProps extends TextInputProps {
     label: string;
     icon?: ImageURISource;
     iconStyle?: ImageStyle;

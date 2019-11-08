@@ -1,7 +1,7 @@
 import React from "react";
-import {ImageBackground, Keyboard, KeyboardAvoidingView, TouchableOpacity, View, ViewStyle} from "react-native";
+import {Image, ImageStyle, Keyboard, KeyboardAvoidingView, TouchableOpacity, View, ViewStyle} from "react-native";
 import {styleSheetCreate} from "../../common/utils";
-import { isIos} from "../../core/theme";
+import {CommonStyles, isIos} from "../../core/theme";
 import { PlainHeader} from "../../common/components/Headers";
 import {localization} from "../../common/localization/localization";
 import {MainButton} from "../../common/components/MainButton";
@@ -44,7 +44,7 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
     static navigationOptions = PlainHeader(localization.auth.signInSplash);
     constructor(props: IEmpty) {
         super(props);
-        this.state = {login: "", password: ""};
+        this.state = {login: "d@d.dd", password: "1"}; //TODO: for fast auth
     }
     render(): JSX.Element {
         const {login, password} = this.state;
@@ -52,26 +52,27 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
         const isDisabled = login == "" || password == "" || isAuthorizing;
 
         return (
-            <ImageBackground style={styles.imgBackground} source={ImageResources.imagebackground}>
-            <TouchableOpacity  style={styles.container2} onPress={Keyboard.dismiss} activeOpacity={1}>
+            <TouchableOpacity  style={CommonStyles.flex1} onPress={Keyboard.dismiss} activeOpacity={1}>
                 <KeyboardAvoidingView
-                    style={styles.container}
+                    style={CommonStyles.flex1}
                     behavior={"padding"}
-                    keyboardVerticalOffset={isIos ? 60 : 75}
+                    keyboardVerticalOffset={isIos ? 60 : 95}
                 >
-                    <View style={styles.innerContainer}>
-                        <AuthTextInput
-                            containerStyle={styles.input}
-                            label={localization.auth.email}
-                            onChangeText={this.onLoginTextChange}
-                        />
-                        <AuthTextInput
-                            label={localization.auth.password}
-                            containerStyle={styles.input}
-                            secureTextEntry={true}
-                            onChangeText={this.onPasswordTextChange}
-                        />
-                    </View>
+                    <Image style={styles.background} source={ImageResources.imagebackground} fadeDuration={0}/>
+                    <AuthTextInput
+                        containerStyle={styles.input}
+                        label={localization.auth.email}
+                        onChangeText={this.onLoginTextChange}
+                        value={this.state.login}
+                    />
+                    <AuthTextInput
+                        label={localization.auth.password}
+                        containerStyle={styles.input}
+                        secureTextEntry={true}
+                        onChangeText={this.onPasswordTextChange}
+                        value={this.state.password}
+                    />
+                    <View style={styles.separator}/>
                     <MainButton
                         buttonType={isDisabled ? ButtonType.disabled : ButtonType.positive}
                         disabled={isDisabled}
@@ -80,40 +81,30 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
                     />
                 </KeyboardAvoidingView>
             </TouchableOpacity>
-            </ImageBackground>
         );
     }
 
-    private onLoginPress = (): void => {
-       this.dispatchProps.login(this.state.login, this.state.password);
-    }
-    private onLoginTextChange = (login: string): void => {
-        this.setState({login});
-    }
-    private onPasswordTextChange = (password: string): void => {
-        this.setState({password});
-    }
+    private onLoginPress = (): void => this.dispatchProps.login(this.state.login, this.state.password);
+    private onLoginTextChange = (login: string): void => this.setState({login});
+    private onPasswordTextChange = (password: string): void => this.setState({password});
 }
 
 const styles = styleSheetCreate({
-    container2: {
+    background: {
+        position: "absolute",
+        top: -100, //TODO: for identity with splash screen
+        bottom: 0,
+        left: 0,
+        right: 0,
+        resizeMode: "stretch",
+        width: null as any,
+        height: null as any,
+    } as ImageStyle,
+    separator: {
         flex: 1,
-    } as ViewStyle,
-    container: {
-        flex: 1,
-        justifyContent: "flex-end"
-    }as ViewStyle,
-    innerContainer: {
-        flex: 1,
-        justifyContent: "flex-start"
     } as ViewStyle,
     input: {
         marginHorizontal: 16,
         marginTop: 30,
     }as ViewStyle,
-    imgBackground: {
-        width: "100%",
-        height: "100%",
-        flex: 1
-    } as ViewStyle
 });

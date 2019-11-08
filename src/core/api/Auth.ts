@@ -7,7 +7,7 @@ export class Auth {
 
     static async getSessionId(): Promise<string | null> {
         try {
-            const item = new UserRequest({email: "buyskih@gmail.com", password: "001"});
+            const item = new UserRequest({email: "string", password: "string"}); //TODO: super fix
             Auth.sessionId = await userRequest.authorization(item);
         } catch (e) {
             alert("Authorization failed");
