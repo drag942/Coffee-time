@@ -1,0 +1,6 @@
+{
+  "loggerUrl": "insert some here",
+  "serverUrl": "https://jsonplaceholder.typicode.com",
+  "useBugReporter": false,
+  "showVersion": false
+}
