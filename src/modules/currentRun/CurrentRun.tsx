@@ -47,7 +47,7 @@ interface IState {
     })
 )
 export class CurrentRun extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
-    static navigationOptions = PlainHeader( true, true);
+    static navigationOptions = PlainHeader(localization.pages.currentRun, true, true);
 
     constructor(props: IEmpty) {
         super(props);

@@ -7,20 +7,14 @@ import {NavigationActions} from "../../navigation/navigation";
 import {Image, View} from "react-native";
 import {styleSheetCreate} from "../utils";
 
+export const NoHeader = (): NavigationStackScreenOptions | null => ({header: <React.Fragment/>});
 
-export function NoHeader(): NavigationStackScreenOptions | null {
+export function PlainHeader(title?: string, showLeftButton?: boolean, showDrawerIcon?: boolean): NavigationStackScreenOptions {
     return ({
-        header: <React.Fragment/>
-    });
-}
-
-export function PlainHeader( showLeftButton?: boolean, showDrawerIcon?: boolean):
-    NavigationStackScreenOptions {
-    return ({
-        headerTitle: (
+        headerTitle: title || (
              <Image
                  source={ImageResources.logo}
-                 style={styleSheetCreate({width: 100, height: 35, marginRight: 100, marginLeft: 100})}
+                 style={styleSheetCreate({width: 100, height: 35, marginRight: 100, marginLeft: 100})} //TODO: bad style and bad position styleSheetCreate
              />
          ),
         headerTitleStyle: CommonHeaderStyles.headerTitleStyle as any,

@@ -6,7 +6,6 @@ import {styleSheetCreate} from "../../common/utils";
 import {Colors} from "../../core/theme";
 import {CafeInfo} from "../../core/api/CoffeeRequest";
 import {BaseReduxComponent, IReduxProps} from "../../core/BaseComponent";
-
 import {PlainHeader} from "../../common/components/Headers";
 import {MainPageComponent} from "../mainPage/components/mainPageComponent";
 import {NavigationAction, NavigationLeafRoute, NavigationScreenProp} from "react-navigation";
@@ -21,19 +20,26 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
     navigation: NavigationScreenProp<NavigationLeafRoute<ICommonNavParams>, NavigationAction>;
 }
 
-@connectAdv(({mainPage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps => ({
+@connectAdv(
+    ({mainPage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps => ({
         cafe: mainPage.cafes.find(item => item.id == ownProps.navigation.state.params!.id)!,
-
     })
 )
 
 export class CafePage extends BaseReduxComponent<IStateProps, IEmpty, IProps> {
-    static navigationOptions = PlainHeader( true);
+    static navigationOptions = PlainHeader( undefined, true);
+
     render(): JSX.Element {
         const cafe = this.stateProps.cafe;
+
         return(
             <View style={styles.container}>
-                <MainPageComponent id={cafe.id} title={cafe.name} address={cafe.address} imageSource={cafe.images}/>
+                <MainPageComponent
+                    id={cafe.id}
+                    title={cafe.name}
+                    address={cafe.address}
+                    imageSource={cafe.images}
+                />
             </View>
         );
     }

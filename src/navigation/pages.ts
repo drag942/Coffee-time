@@ -5,7 +5,7 @@ export class Pages {
     feed = "feed";
     menu = "menu";
     main = "main";
-    cafePage = "cafePage"
+    cafePage = "cafePage";
 
     login = "login";
 

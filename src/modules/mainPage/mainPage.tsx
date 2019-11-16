@@ -36,13 +36,13 @@ interface IDispatchProps {
             dispatch(MainPageAsyncActions.getCafes());
         },
         navigateToCafePage: (id: string): void => {
-            dispatch(NavigationActions.navigateToCafePage({id}))
+            dispatch(NavigationActions.navigateToCafePage({id}));
         }
     })
 )
 
 export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps> {
-    static navigationOptions = PlainHeader( true);
+    static navigationOptions = PlainHeader(undefined, true);
     componentDidMount(): void {
         this.dispatchProps.getCafes();
     }
@@ -87,7 +87,8 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps> {
         return (
             <View style={{height: 10}}/>
         );
-    }
+    };
+
     private renderEmptyComponent = (): JSX.Element => {
         return (
             <EmptyComponent title={"Список пуст"}/>

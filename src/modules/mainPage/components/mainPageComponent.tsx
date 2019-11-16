@@ -12,13 +12,12 @@ interface IProps {
     title: string;
     address: string;
     imageSource: string | undefined;
-    onPress: (id: string) => void;
+    onPress?: (id: string) => void;
 }
 
 export class MainPageComponent extends PureComponent<IProps> {
     render(): JSX.Element {
         const {title, address, imageSource, onPress} = this.props;
-
 
         return (
             <TouchableOpacity style={styles.container} onPress={this.onPress} disabled={onPress == null}>

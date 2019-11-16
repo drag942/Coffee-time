@@ -1,8 +1,7 @@
 import {reducerWithInitialState} from "typescript-fsa-reducers";
 import {AuthInitialState2, IAuthState2} from "./authState2";
-
 import {newState} from "../../common/newState";
-import {Failure, Success} from "typescript-fsa";
+import {Failure} from "typescript-fsa";
 import {IAuth2Params} from "../../types/interfaces";
 import {Auth2Actions} from "./auth2Actions";
 
@@ -10,7 +9,7 @@ function loginStartedHandler(state: IAuthState2): IAuthState2 {
     return newState(state, {isAuthorizing: true, error: null});
 }
 
-function loginDoneHandler(state: IAuthState2, {result}: Success<IAuth2Params, string>): IAuthState2 {
+function loginDoneHandler(state: IAuthState2): IAuthState2 {
     return newState(state, {isAuthorizing: false, error: null});
 }
 

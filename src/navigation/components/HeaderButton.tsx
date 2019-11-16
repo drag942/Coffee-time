@@ -5,7 +5,6 @@ import {styleSheetCreate} from "../../common/utils";
 import {BaseReduxComponent} from "../../core/BaseComponent";
 import {connectAdv} from "../../core/store";
 
-
 interface IProps {
     image: ImageURISource;
     action?: () => any;

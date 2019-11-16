@@ -11,7 +11,6 @@ import {Playground} from "../../common/playground";
 import {CoreActions} from "../../core/store";
 import {IAppState} from "../../core/store/appState";
 import {Colors, isIos} from "../../core/theme";
-// import {AuthActions} from "../../modules/auth/authActions";
 import {AuthPage} from "../../modules/auth/AuthPage";
 import {NavigationConfig} from "../config";
 import {extendWithDontPushTwoPageInStack} from "../extendWithDontPushTwoPageInStack";
@@ -25,7 +24,7 @@ import {CafePage} from "../../modules/cafePage/cafePage";
 export const RootNavigator = createStackNavigator({
     [NavigationPages.auth]: {screen: AuthPage2},
     [NavigationPages.mainPage]: {screen: MainPage},
-    [NavigationPages.cafePage]:{screen: CafePage},
+    [NavigationPages.cafePage]: {screen: CafePage},
     [NavigationPages.feed] : {screen: Feed},
     [NavigationPages.login]: {screen: AuthPage},
     [NavigationPages.playground]: {screen: Playground},
@@ -74,6 +73,7 @@ export function rootNavigationReducer(
                         })
                 ]
             }), state);
+            //TODO: don't comment code, delete it
             // case AuthActions.login.done.type:
             // return RootNavigator.router.getStateForAction(StackActions.reset(
             //     {

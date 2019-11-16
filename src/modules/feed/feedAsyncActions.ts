@@ -14,10 +14,10 @@ export class FeedAsyncActions {
 
             try {
                 dispatch(FeedActions.getPosts.started(params));
-                const result = await requestsRepository.mobilePostApiRequest.getPosts()
+                const result = await requestsRepository.mobilePostApiRequest.getPosts();
                 dispatch(FeedActions.getPosts.done({params, result}));
             } catch (error) {
-                showToast(error.message)
+                showToast(error.message);
                 dispatch(FeedActions.getPosts.failed({params, error}));
             }
         };

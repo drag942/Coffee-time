@@ -20,12 +20,12 @@ export class Auth2AsyncActions {
                 AuthHelper2.checkEmail(params.login);
                 AuthHelper2.checkPassword(params.password);
 
-               const token =  await Auth.getSessionId() || "NullToken";
-                console.log(token)
+                const token =  await Auth.getSessionId() || "NullToken";
+                console.log(token);
 
                 dispatch(Auth2Actions.login.done({params, result: token}));
             } catch (error) {
-                showToast(error.message)
+                showToast(error.message);
                 dispatch(Auth2Actions.login.failed({params, error}));
             }
         };

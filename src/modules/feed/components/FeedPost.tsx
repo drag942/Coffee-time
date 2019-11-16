@@ -16,12 +16,8 @@ export class FeedPost extends PureComponent<IProps> {
 
         return(
             <View style={styles.container}>
-                <Text style={styles.title}>
-                    {title}
-                </Text>
-                <Text style={styles.body}>
-                    {body}
-                </Text>
+                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.body}>{body}</Text>
             </View>
         );
     }
@@ -33,8 +29,6 @@ const styles = styleSheetCreate({
         borderWidth: 1,
         borderColor: Colors.black,
         padding: 10,
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
         flexDirection: "column",
         elevation: 5,
         marginVertical: 2,
@@ -51,5 +45,4 @@ const styles = styleSheetCreate({
         fontFamily: Fonts.regular,
         color: Colors.black,
     } as TextStyle,
-
 });

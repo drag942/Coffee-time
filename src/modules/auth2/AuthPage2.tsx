@@ -13,6 +13,7 @@ import {Dispatch} from "redux";
 import {Auth2AsyncActions} from "./auth2AsyncActions";
 import {AuthTextInput} from "../../common/components/AuthTextInput";
 import {ImageResources} from "../../common/ImageResources.g";
+import {appSettingsProvider} from "../../core/settings";
 
 interface IStateProps {
     isAuthorizing: boolean;
@@ -39,20 +40,23 @@ interface IState {
         },
     }),
 )
-
 export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
-    static navigationOptions = NoHeader()
+    static navigationOptions = NoHeader();
+
     constructor(props: IEmpty) {
         super(props);
-        this.state = {login: "d@d.dd", password: "1"}; //TODO: for fast auth
+        this.state = appSettingsProvider.settings.environment == "Development"
+            ? {login: "string", password: "string"} //TODO: for fast auth(need use auth parameters for registered user)
+            : {login: "", password: ""};
     }
+
     render(): JSX.Element {
         const {login, password} = this.state;
         const isAuthorizing = this.stateProps.isAuthorizing;
         const isDisabled = login == "" || password == "" || isAuthorizing;
 
         return (
-            <TouchableOpacity  style={CommonStyles.flex1} onPress={Keyboard.dismiss} activeOpacity={1}>
+            <TouchableOpacity style={CommonStyles.flex1} onPress={Keyboard.dismiss} activeOpacity={1}>
                 <KeyboardAvoidingView
                     style={styles.container}
                     behavior={"padding"}
@@ -89,8 +93,10 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
     private onLoginPress = (): void => this.dispatchProps.login(this.state.login, this.state.password);
     private onLoginTextChange = (login: string): void => this.setState({login});
     private onPasswordTextChange = (password: string): void => this.setState({password});
+    //TODO: state need use if you need change values. In this case need use class parameters(private login = "";)
 }
 
+//TODO: not use % if can, rework this page to flex only
 const styles = styleSheetCreate({
     container: {
         flex: 1,
@@ -105,20 +111,11 @@ const styles = styleSheetCreate({
         marginBottom: "40%",
     } as ViewStyle,
     background: {
-        // position: "absolute",
-        // top: -100, //TODO: for identity with splash screen
-        // bottom: 0,
-        // left: 0,
-        // right: 0,
-        // resizeMode: "stretch",
-        // width: null as any,
-        // height: null as any,
         flex: 1,
         width: "50%",
         height: "50%",
         resizeMode: "contain",
         alignSelf: "center"
-
     } as ImageStyle,
     separator: {
         height: "40%"

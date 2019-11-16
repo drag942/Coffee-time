@@ -7,25 +7,20 @@ import {Colors, Fonts} from "../../../core/theme";
 interface IProps extends TextInputProps {
     label: string;
     error: string;
-
 }
 
 export class AuthInput extends PureComponent<IProps> {
         render(): JSX.Element {
-            const {label, error} = this.props;
+            const {label, error, style} = this.props;
 
             return(
                 <View style={styles.container}>
-                    <Text style={styles.label}>
-                        {label}
-                    </Text>
+                    <Text style={styles.label}>{label}</Text>
                     <TextInput
                         {...this.props}
-                        style={[styles.input, this.props.style]}
+                        style={style != null ? [styles.input, style] : styles.input}
                     />
-                    <Text style={styles.error}>
-                        {error}
-                    </Text>
+                    <Text style={styles.error}>{error}</Text>
                 </View>
             );
         }
