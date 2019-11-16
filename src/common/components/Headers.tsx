@@ -4,7 +4,9 @@ import React from "react";
 import {HeaderButton} from "../../navigation/components/HeaderButton";
 import {ImageResources} from "../ImageResources.g";
 import {NavigationActions} from "../../navigation/navigation";
-import {View} from "react-native";
+import {Image, View} from "react-native";
+import {styleSheetCreate} from "../utils";
+
 
 export function NoHeader(): NavigationStackScreenOptions | null {
     return ({
@@ -12,14 +14,19 @@ export function NoHeader(): NavigationStackScreenOptions | null {
     });
 }
 
-export function PlainHeader(title: string, showLeftButton?: boolean, showDrawerIcon?: boolean):
+export function PlainHeader( showLeftButton?: boolean, showDrawerIcon?: boolean):
     NavigationStackScreenOptions {
     return ({
-        headerTitle: title,
+        headerTitle: (
+             <Image
+                 source={ImageResources.logo}
+                 style={styleSheetCreate({width: 100, height: 35, marginRight: 100, marginLeft: 100})}
+             />
+         ),
         headerTitleStyle: CommonHeaderStyles.headerTitleStyle as any,
         headerLeft: showLeftButton ? (
             <HeaderButton
-                image={showDrawerIcon ? ImageResources.image_menu : ImageResources.image_back}
+                image={showDrawerIcon ? ImageResources.image_menu : ImageResources.icon_back_click}
                 action={showDrawerIcon ? NavigationActions.toggleDrawer : NavigationActions.navigateToBack}
             />
         ) : undefined,

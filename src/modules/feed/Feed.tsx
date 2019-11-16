@@ -62,7 +62,7 @@ export class Feed extends BaseReduxComponent<IStateProps, IDispatchProps> {
        this.dispatchProps.getPosts();
     };
 
-    private renderPost = ({item, index}: {item: Post}): JSX.Element => {
+    private renderPost = ({item}: {item: Post}): JSX.Element => {
         return (
             <FeedPost id={item.id} title={item.body} body={item.body}/>
         );

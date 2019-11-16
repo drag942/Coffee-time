@@ -89,10 +89,11 @@ const mainContainer: ViewStyle = {
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    borderRadius: 5,
 };
 
 const styles = styleSheetCreate({
-    positiveContainer: styleSheetFlatten([mainContainer, {backgroundColor: Colors.greenish}]) as ViewStyle,
+    positiveContainer: styleSheetFlatten([mainContainer, {backgroundColor: Colors.browny}]) as ViewStyle,
     negativeContainer: styleSheetFlatten([mainContainer, {backgroundColor: Colors.paleRed}]) as ViewStyle,
     disabledContainer: styleSheetFlatten([mainContainer, {backgroundColor: Colors.warmGreyTwo}]) as ViewStyle,
     additionalContainer: styleSheetFlatten([mainContainer, {backgroundColor: Colors.squash}]) as ViewStyle,

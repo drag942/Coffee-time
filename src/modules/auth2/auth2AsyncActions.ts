@@ -23,7 +23,7 @@ export class Auth2AsyncActions {
                const token =  await Auth.getSessionId() || "NullToken";
                 console.log(token)
 
-                dispatch(Auth2Actions.login.done({params, result: "Success"}));
+                dispatch(Auth2Actions.login.done({params, result: token}));
             } catch (error) {
                 showToast(error.message)
                 dispatch(Auth2Actions.login.failed({params, error}));

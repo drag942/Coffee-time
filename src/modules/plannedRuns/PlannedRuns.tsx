@@ -48,7 +48,7 @@ interface IState {
         },
     }))
 export class PlannedRuns extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
-    static navigationOptions = PlainHeader(localization.pages.plannedRuns, true, true);
+    static navigationOptions = PlainHeader( true, true);
     private keyExtractor = defaultIdExtractor;
 
     constructor(props: IEmpty) {

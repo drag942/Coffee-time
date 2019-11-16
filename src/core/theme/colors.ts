@@ -14,6 +14,7 @@ export class Colors {
     static charcoalGrey93 = "rgba(42,48,52,0.93)";
     static black = "#212121";
     static dark = "#263238";
-
+    static pastel = "#FFF2CE";
     static transparent = "transparent";
+    static browny = "#b4c39d";
 }

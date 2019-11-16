@@ -10,7 +10,7 @@ interface IProps {
 }
 
 export class InDeveloping extends PureComponent<IProps> {
-    static navigationOptions = PlainHeader("In Development");
+    static navigationOptions = PlainHeader();
 
     render(): JSX.Element {
         return (

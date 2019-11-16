@@ -11,6 +11,7 @@ export const commonLocalization = {
         "invoicePhotoFileName": "invoice_photo",
         "invoiceBackPhotoFileName": "invoice_back_photo",
         "login": "Login",
-        "password": "Password"
+        "password": "Password",
+        "brand_name": "CoffeTime"
     }
 };

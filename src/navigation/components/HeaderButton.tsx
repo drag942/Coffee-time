@@ -4,7 +4,7 @@ import {Dispatch} from "redux";
 import {styleSheetCreate} from "../../common/utils";
 import {BaseReduxComponent} from "../../core/BaseComponent";
 import {connectAdv} from "../../core/store";
-import {Colors} from "../../core/theme";
+
 
 interface IProps {
     image: ImageURISource;
@@ -52,7 +52,6 @@ const styles = styleSheetCreate({
         resizeMode: "center"
     } as ImageStyle,
     imageTintColor: {
-        tintColor: Colors.white,
         resizeMode: "center"
     } as ImageStyle
 });

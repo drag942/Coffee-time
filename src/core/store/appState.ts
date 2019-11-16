@@ -7,6 +7,7 @@ import {IPlannedRunState, PlannedRunInitialState} from "../../modules/plannedRun
 import {CurrentRunInitialState, ICurrentRunState} from "../../modules/currentRun/currentRunState";
 import {AuthInitialState2, IAuthState2} from "../../modules/auth2/authState2";
 import {FeedInitialState, IFeedState} from "../../modules/feed/feedState";
+import {IMainPageState, MainPageInitialState} from "../../modules/mainPage/mainPageState";
 
 export interface IAppState {
     navigation: INavigationState;
@@ -17,6 +18,7 @@ export interface IAppState {
     plannedRuns: IPlannedRunState;
     currentRun: ICurrentRunState;
     feed: IFeedState;
+    mainPage: IMainPageState;
 }
 
 export interface INavigationState {
@@ -38,5 +40,6 @@ export function getAppInitialState(): IAppState {
         currentRun: CurrentRunInitialState,
         auth2: AuthInitialState2,
         feed: FeedInitialState,
+        mainPage: MainPageInitialState,
     };
 }

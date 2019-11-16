@@ -45,7 +45,7 @@ interface IState {
     })
 )
 export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
-    static navigationOptions = PlainHeader(localization.auth.signInSplash);
+    static navigationOptions = PlainHeader();
     private passwordTextInput = new Ref<AuthTextInput>();
 
     constructor(props: IEmpty) {

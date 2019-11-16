@@ -19,9 +19,13 @@ import {NavigationPages} from "../navigation";
 import {AuthPage2} from "../../modules/auth2/AuthPage2";
 import {Auth2Actions} from "../../modules/auth2/auth2Actions";
 import {Feed} from "../../modules/feed/Feed";
+import {MainPage} from "../../modules/mainPage/mainPage";
+import {CafePage} from "../../modules/cafePage/cafePage";
 
 export const RootNavigator = createStackNavigator({
     [NavigationPages.auth]: {screen: AuthPage2},
+    [NavigationPages.mainPage]: {screen: MainPage},
+    [NavigationPages.cafePage]:{screen: CafePage},
     [NavigationPages.feed] : {screen: Feed},
     [NavigationPages.login]: {screen: AuthPage},
     [NavigationPages.playground]: {screen: Playground},
@@ -53,7 +57,7 @@ export function rootNavigationReducer(
                         index: 0,
                         actions: [
                             NavigationActions.navigate({
-                                routeName: NavigationPages.feed,
+                                routeName: NavigationPages.mainPage,
                             })
                         ]
                     }
@@ -66,7 +70,7 @@ export function rootNavigationReducer(
                 index: 0,
                 actions: [
                     NavigationActions.navigate(
-                        {routeName: NavigationPages.feed,
+                        {routeName: NavigationPages.mainPage,
                         })
                 ]
             }), state);

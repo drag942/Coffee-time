@@ -9,6 +9,7 @@ import {plannedRunReducer} from "../../modules/plannedRuns/plannedRunReducer";
 import {currentRunReducer} from "../../modules/currentRun/currentRunReducer";
 import {auth2Reducer} from "../../modules/auth2/auth2Reducer";
 import {feedReducer} from "../../modules/feed/feedReducer";
+import {mainPageReducer} from "../../modules/mainPage/mainPageReducer";
 
 export function createMainReducer(): any {
     const navigationReducers: Reducers<INavigationState> = NavigationConfig.instance.getReducer();
@@ -22,6 +23,7 @@ export function createMainReducer(): any {
         currentRun: currentRunReducer,
         auth2: auth2Reducer,
         feed: feedReducer,
+        mainPage: mainPageReducer,
     };
 
     return combineReducers(reducers);

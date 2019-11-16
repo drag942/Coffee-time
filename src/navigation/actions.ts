@@ -38,6 +38,7 @@ export class Actions {
     navigateToRun = routeWithParams<ICommonNavParams>(NavigationPages.currentRun);
     navigateToPlannedRuns = simpleToRoute(NavigationPages.plannedRuns);
     navigateToFeed = simpleToRoute(NavigationPages.feed);
+    navigateToCafePage = routeWithParams<ICommonNavParams>(NavigationPages.cafePage);
 
     navigateToBack = (): SimpleThunk => {
         return async (dispatch, getState): Promise<void> => {

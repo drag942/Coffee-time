@@ -1,8 +1,8 @@
 import React from "react";
 import {Image, ImageStyle, Keyboard, KeyboardAvoidingView, TouchableOpacity, View, ViewStyle} from "react-native";
 import {styleSheetCreate} from "../../common/utils";
-import {CommonStyles, isIos} from "../../core/theme";
-import { PlainHeader} from "../../common/components/Headers";
+import {Colors, CommonStyles, isIos} from "../../core/theme";
+import {NoHeader} from "../../common/components/Headers";
 import {localization} from "../../common/localization/localization";
 import {MainButton} from "../../common/components/MainButton";
 import {ButtonType} from "../../common/enums/buttonType";
@@ -41,7 +41,7 @@ interface IState {
 )
 
 export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
-    static navigationOptions = PlainHeader(localization.auth.signInSplash);
+    static navigationOptions = NoHeader()
     constructor(props: IEmpty) {
         super(props);
         this.state = {login: "d@d.dd", password: "1"}; //TODO: for fast auth
@@ -54,31 +54,33 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
         return (
             <TouchableOpacity  style={CommonStyles.flex1} onPress={Keyboard.dismiss} activeOpacity={1}>
                 <KeyboardAvoidingView
-                    style={CommonStyles.flex1}
+                    style={styles.container}
                     behavior={"padding"}
                     keyboardVerticalOffset={isIos ? 60 : 95}
                 >
-                    <Image style={styles.background} source={ImageResources.imagebackground} fadeDuration={0}/>
-                    <AuthTextInput
-                        containerStyle={styles.input}
-                        label={localization.auth.email}
-                        onChangeText={this.onLoginTextChange}
-                        value={this.state.login}
-                    />
-                    <AuthTextInput
-                        label={localization.auth.password}
-                        containerStyle={styles.input}
-                        secureTextEntry={true}
-                        onChangeText={this.onPasswordTextChange}
-                        value={this.state.password}
-                    />
-                    <View style={styles.separator}/>
-                    <MainButton
-                        buttonType={isDisabled ? ButtonType.disabled : ButtonType.positive}
-                        disabled={isDisabled}
-                        title={localization.auth.signIn}
-                        onPress={this.onLoginPress}
-                    />
+                    <Image style={styles.background} source={ImageResources.logo}/>
+                    <View style={styles.form}>
+                        <AuthTextInput
+                            containerStyle={styles.input}
+                            label={localization.auth.email}
+                            onChangeText={this.onLoginTextChange}
+                            value={this.state.login}
+                        />
+                        <AuthTextInput
+                            label={localization.auth.password}
+                            containerStyle={styles.input}
+                            secureTextEntry={true}
+                            onChangeText={this.onPasswordTextChange}
+                            value={this.state.password}
+                        />
+                        <View style={styles.separator}/>
+                        <MainButton
+                            buttonType={isDisabled ? ButtonType.disabled : ButtonType.positive}
+                            disabled={isDisabled}
+                            title={localization.auth.signIn}
+                            onPress={this.onLoginPress}
+                        />
+                    </View>
                 </KeyboardAvoidingView>
             </TouchableOpacity>
         );
@@ -90,18 +92,36 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
 }
 
 const styles = styleSheetCreate({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.white,
+        alignItems: "center",
+        justifyContent: "space-between"
+    } as ViewStyle,
+    form: {
+        flex: 1,
+        justifyContent: "center",
+        width: "80%",
+        marginBottom: "40%",
+    } as ViewStyle,
     background: {
-        position: "absolute",
-        top: -100, //TODO: for identity with splash screen
-        bottom: 0,
-        left: 0,
-        right: 0,
-        resizeMode: "stretch",
-        width: null as any,
-        height: null as any,
+        // position: "absolute",
+        // top: -100, //TODO: for identity with splash screen
+        // bottom: 0,
+        // left: 0,
+        // right: 0,
+        // resizeMode: "stretch",
+        // width: null as any,
+        // height: null as any,
+        flex: 1,
+        width: "50%",
+        height: "50%",
+        resizeMode: "contain",
+        alignSelf: "center"
+
     } as ImageStyle,
     separator: {
-        flex: 1,
+        height: "40%"
     } as ViewStyle,
     input: {
         marginHorizontal: 16,

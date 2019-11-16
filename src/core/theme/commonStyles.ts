@@ -1,4 +1,4 @@
-import {Platform, TextStyle, ViewStyle} from "react-native";
+import {ImageStyle, Platform,  ViewStyle} from "react-native";
 import {styleSheetCreate, styleSheetFlatten} from "../../common/utils";
 import {Colors} from "./colors";
 import {Fonts} from "./fonts";
@@ -24,9 +24,9 @@ const commonHeaderTitleStyle = {
     alignSelf: "center",
     textAlign: "center",
     fontSize: 20,
-    fontFamily: Fonts.medium,
-    color: Colors.white,
-} as TextStyle;
+    fontFamily: Fonts.lobster,
+    color: Colors.black,
+} as ImageStyle;
 
 const commonHeaderStyle = {
     borderBottomWidth: 0,
@@ -43,6 +43,6 @@ const commonHeaderStyle = {
 } as ViewStyle;
 
 export const CommonHeaderStyles = styleSheetCreate({
-    headerTitleStyle: styleSheetFlatten([commonHeaderTitleStyle, {color: Colors.white}]),
-    headerStyle: styleSheetFlatten([commonHeaderStyle, {backgroundColor: Colors.black}]),
+    headerTitleStyle: styleSheetFlatten([commonHeaderTitleStyle, {color: Colors.warmGreyTwo}]),
+    headerStyle: styleSheetFlatten([commonHeaderStyle, {backgroundColor: Colors.white}]),
 });
