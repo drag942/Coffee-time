@@ -24,10 +24,9 @@ interface IDispatchProps {
     login: (login: string, password: string) => void;
 }
 
-interface IState {
-    login: string;
-    password: string;
-}
+ interface IState {
+     isDisabled: boolean;
+ }
 
 @connectAdv(
     ({auth2}: IAppState): IStateProps => ({
@@ -42,20 +41,18 @@ interface IState {
 )
 export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
     static navigationOptions = NoHeader();
+    private login: string = "";
+    private password: string = "";
 
     constructor(props: IEmpty) {
         super(props);
-        this.state = appSettingsProvider.settings.environment == "Development"
-            ? {login: "string", password: "string"} //TODO: for fast auth(need use auth parameters for registered user)
-            : {login: "", password: ""};
+        this.state = {isDisabled: true};
     }
 
     render(): JSX.Element {
-        const {login, password} = this.state;
         const isAuthorizing = this.stateProps.isAuthorizing;
-        const isDisabled = login == "" || password == "" || isAuthorizing;
-
-        return (
+        const isDisabled = this.state.isDisabled || isAuthorizing;
+        return(
             <TouchableOpacity style={CommonStyles.flex1} onPress={Keyboard.dismiss} activeOpacity={1}>
                 <KeyboardAvoidingView
                     style={styles.container}
@@ -68,14 +65,12 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
                             containerStyle={styles.input}
                             label={localization.auth.email}
                             onChangeText={this.onLoginTextChange}
-                            value={this.state.login}
                         />
                         <AuthTextInput
                             label={localization.auth.password}
                             containerStyle={styles.input}
                             secureTextEntry={true}
                             onChangeText={this.onPasswordTextChange}
-                            value={this.state.password}
                         />
                         <View style={styles.separator}/>
                         <MainButton
@@ -85,14 +80,34 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
                             onPress={this.onLoginPress}
                         />
                     </View>
+                    <View style={styles.footer}/>
                 </KeyboardAvoidingView>
             </TouchableOpacity>
         );
     }
-
-    private onLoginPress = (): void => this.dispatchProps.login(this.state.login, this.state.password);
-    private onLoginTextChange = (login: string): void => this.setState({login});
-    private onPasswordTextChange = (password: string): void => this.setState({password});
+    private onLoginPress = (): void => {
+        if (appSettingsProvider.settings.environment == "Production") {
+            this.login = "string";
+            this.password = "string";
+        }
+        this.dispatchProps.login(this.login, this.password);
+    };
+    private onLoginTextChange = (login: string): void => {
+        this.login = login;
+        if ( this.login == "" || this.password == "" ) {
+            this.setState({isDisabled: true});
+        } else {
+            this.setState({isDisabled: false});
+        }
+    };
+    private onPasswordTextChange = (password: string): void => {
+        this.password = password;
+        if (this.login == "" || this.password == "") {
+            this.setState({isDisabled: true});
+        } else {
+            this.setState({isDisabled: false});
+        }
+    };
     //TODO: state need use if you need change values. In this case need use class parameters(private login = "";)
 }
 
@@ -101,27 +116,25 @@ const styles = styleSheetCreate({
     container: {
         flex: 1,
         backgroundColor: Colors.white,
-        alignItems: "center",
-        justifyContent: "space-between"
     } as ViewStyle,
     form: {
-        flex: 1,
-        justifyContent: "center",
-        width: "80%",
-        marginBottom: "40%",
+        flex: 5,
+        alignSelf: "stretch",
+        paddingRight: 70,
+        paddingLeft: 70
     } as ViewStyle,
     background: {
-        flex: 1,
-        width: "50%",
-        height: "50%",
-        resizeMode: "contain",
+        flex: 4,
+         resizeMode: "contain",
         alignSelf: "center"
     } as ImageStyle,
     separator: {
-        height: "40%"
+        flex: 1,
     } as ViewStyle,
     input: {
-        marginHorizontal: 16,
-        marginTop: 30,
+         marginTop: 30,
     }as ViewStyle,
+    footer: {
+        flex: 3,
+    } as ViewStyle
 });

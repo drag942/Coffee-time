@@ -6,6 +6,7 @@ import {IAuth2Params} from "../../types/interfaces";
 import {AuthHelper2} from "../../common/helpers/AuthHelper2";
 import {showToast} from "../../common/showToast";
 import {Auth} from "../../core/api/Auth";
+import {appSettingsProvider} from "../../core/settings";
 
 export class Auth2AsyncActions {
     static login(login: string, password: string): SimpleThunk {
@@ -17,10 +18,12 @@ export class Auth2AsyncActions {
 
             try {
                 dispatch(Auth2Actions.login.started(params));
-                AuthHelper2.checkEmail(params.login);
-                AuthHelper2.checkPassword(params.password);
+                if (appSettingsProvider.settings.environment !== "Production") {
+                    AuthHelper2.checkEmail(params.login);
+                    AuthHelper2.checkPassword(params.password);
+                }
 
-                const token =  await Auth.getSessionId() || "NullToken";
+                const token =  await Auth.getSessionId(params.login, params.password) || "NullToken";
                 console.log(token);
 
                 dispatch(Auth2Actions.login.done({params, result: token}));
