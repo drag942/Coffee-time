@@ -55,7 +55,7 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
     static navigationOptions = PlainHeader( undefined, true);
     componentDidMount(): void {
          this.dispatchProps.getProduct();
-     }
+    }
     render(): JSX.Element {
          const {product} = this.stateProps;
 
@@ -80,6 +80,7 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
                </View>
                <View style={styles.descriptionContainer}>
                    <Text style={styles.description}>
+                       {""/*TODO: in api i see description*/}
                        Lorem ipsum dolor sit amet,
                        consectetur adipiscing elit,
                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -101,6 +102,7 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
         );
     }
     private setFavorite = (): void => {
+        //TODO: add callback in setFavour instead timeout(in right api new object is result)
         this.dispatchProps.setFavorite();
         setTimeout(() => this.dispatchProps.getProduct(), 100);
     };
