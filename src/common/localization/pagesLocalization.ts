@@ -9,5 +9,6 @@ export const pagesLocalization = {
         "makeAWaybillPhoto": "Сфотографируйте ТТН",
         "frontWaybillPhoto": "Лицевая сторона ТТН",
         "backWaybillPhoto": "Оборотная сторона ТТН",
+        "order": "заказать",
     }
 };

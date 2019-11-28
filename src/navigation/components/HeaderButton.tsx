@@ -44,8 +44,6 @@ const styles = styleSheetCreate({
         minWidth: 50,
         minHeight: 39,
         flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center"
     } as ViewStyle,
     image: {
         resizeMode: "center"
