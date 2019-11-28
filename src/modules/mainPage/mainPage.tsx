@@ -139,14 +139,13 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
     };
     private renderCheckBox = (): JSX.Element => {
         return (
+            /*TODO: fix linter errors and cache this array*/
             <SwitchSelector
                 style={styles.switchView}
-                options={
-                    [
-                        {value: 0, imageIcon: ImageResources.icon_list},
-                        { value: 1, imageIcon: ImageResources.icon_map}
-                    ]
-                }
+                options={[
+                    {value: 0, imageIcon: ImageResources.icon_list as string, label: "0"},
+                    {value: 1, imageIcon: ImageResources.icon_map as string, label: "0"},
+                ]}
                 initial={this.state.tabs.index}
                 value={this.state.tabs.index}
                 hasPadding={true}
