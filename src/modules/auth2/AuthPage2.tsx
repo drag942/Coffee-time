@@ -52,6 +52,7 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
     render(): JSX.Element {
         const isAuthorizing = this.stateProps.isAuthorizing;
         const isDisabled = this.state.isDisabled || isAuthorizing;
+
         return(
             <TouchableOpacity style={CommonStyles.flex1} onPress={Keyboard.dismiss} activeOpacity={1}>
                 <KeyboardAvoidingView
@@ -86,7 +87,7 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
         );
     }
     private onLoginPress = (): void => {
-        if (appSettingsProvider.settings.environment == "Production") {
+        if (appSettingsProvider.settings.environment == "Production") {//TODO: bad check. Set Development and change it in localSettings
             this.login = "string";
             this.password = "string";
         }
@@ -94,6 +95,7 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
     };
     private onLoginTextChange = (login: string): void => {
         this.login = login;
+        //TODO: add check state. For remove setState without change isDisabled
         if ( this.login == "" || this.password == "" ) {
             this.setState({isDisabled: true});
         } else {
@@ -102,12 +104,15 @@ export class AuthPage2 extends BaseReduxComponent<IStateProps, IDispatchProps, I
     };
     private onPasswordTextChange = (password: string): void => {
         this.password = password;
+        //TODO: add check state. For remove setState without change isDisabled
         if (this.login == "" || this.password == "") {
             this.setState({isDisabled: true});
         } else {
             this.setState({isDisabled: false});
         }
     };
+    //TODO: use develop branch
+    //TODO: remove todo'a after fix
     //TODO: state need use if you need change values. In this case need use class parameters(private login = "";)
 }
 

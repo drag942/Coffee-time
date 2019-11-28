@@ -18,6 +18,7 @@ export class Auth2AsyncActions {
 
             try {
                 dispatch(Auth2Actions.login.started(params));
+                //TODO: set !Development, now you check in all states except production
                 if (appSettingsProvider.settings.environment !== "Production") {
                     AuthHelper2.checkEmail(params.login);
                     AuthHelper2.checkPassword(params.password);
