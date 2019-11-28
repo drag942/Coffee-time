@@ -6,6 +6,7 @@ export class Pages {
     menu = "menu";
     main = "main";
     cafePage = "cafePage";
+    coffeePage = "coffeePage";
 
     login = "login";
 

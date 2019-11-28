@@ -20,11 +20,13 @@ import {Auth2Actions} from "../../modules/auth2/auth2Actions";
 import {Feed} from "../../modules/feed/Feed";
 import {MainPage} from "../../modules/mainPage/mainPage";
 import {CafePage} from "../../modules/cafePage/cafePage";
+import {CoffeePage} from "../../modules/coffeePage/coffeePage";
 
 export const RootNavigator = createStackNavigator({
     [NavigationPages.auth]: {screen: AuthPage2},
     [NavigationPages.mainPage]: {screen: MainPage},
     [NavigationPages.cafePage]: {screen: CafePage},
+    [NavigationPages.coffeePage]: {screen: CoffeePage},
     [NavigationPages.feed] : {screen: Feed},
     [NavigationPages.login]: {screen: AuthPage},
     [NavigationPages.playground]: {screen: Playground},
@@ -73,18 +75,6 @@ export function rootNavigationReducer(
                         })
                 ]
             }), state);
-            //TODO: don't comment code, delete it
-            // case AuthActions.login.done.type:
-            // return RootNavigator.router.getStateForAction(StackActions.reset(
-            //     {
-            //         index: 0,
-            //         actions: [
-            //             NavigationActions.navigate({
-            //                 routeName: NavigationPages.menu,
-            //             })
-            //         ]
-            //     }
-            // ), state);
         default:
             return RootNavigator.router.getStateForAction(action, state);
     }

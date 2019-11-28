@@ -41,6 +41,7 @@ export class MainPageComponent extends PureComponent<IProps> {
 
 const styles = styleSheetCreate({
     container: {
+        marginBottom: 7,
         backgroundColor: Colors.white,
         flexDirection: "row",
     }as ViewStyle,

@@ -5,7 +5,6 @@ import {HeaderButton} from "../../navigation/components/HeaderButton";
 import {ImageResources} from "../ImageResources.g";
 import {NavigationActions} from "../../navigation/navigation";
 import {Image, View} from "react-native";
-import {styleSheetCreate} from "../utils";
 
 export const NoHeader = (): NavigationStackScreenOptions | null => ({header: <React.Fragment/>});
 
@@ -14,10 +13,10 @@ export function PlainHeader(title?: string, showLeftButton?: boolean, showDrawer
         headerTitle: title || (
              <Image
                  source={ImageResources.logo}
-                 style={styleSheetCreate({width: 100, height: 35, marginRight: 100, marginLeft: 100})} //TODO: bad style and bad position styleSheetCreate
+                 style={CommonHeaderStyles.headerImageStyle} //TODO: bad style and bad position styleSheetCreate
              />
          ),
-        headerTitleStyle: CommonHeaderStyles.headerTitleStyle as any,
+        headerTitleStyle: CommonHeaderStyles as any,
         headerLeft: showLeftButton ? (
             <HeaderButton
                 image={showDrawerIcon ? ImageResources.image_menu : ImageResources.icon_back_click}

@@ -8,6 +8,8 @@ import {CurrentRunInitialState, ICurrentRunState} from "../../modules/currentRun
 import {AuthInitialState2, IAuthState2} from "../../modules/auth2/authState2";
 import {FeedInitialState, IFeedState} from "../../modules/feed/feedState";
 import {IMainPageState, MainPageInitialState} from "../../modules/mainPage/mainPageState";
+import {CafeInitialState, ICafePageState} from "../../modules/cafePage/cafePageState";
+import {CoffeeInitialState, ICoffeePageState} from "../../modules/coffeePage/coffeePageState";
 
 export interface IAppState {
     navigation: INavigationState;
@@ -19,6 +21,8 @@ export interface IAppState {
     currentRun: ICurrentRunState;
     feed: IFeedState;
     mainPage: IMainPageState;
+    cafePage: ICafePageState;
+    coffeePage: ICoffeePageState;
 }
 
 export interface INavigationState {
@@ -41,5 +45,7 @@ export function getAppInitialState(): IAppState {
         auth2: AuthInitialState2,
         feed: FeedInitialState,
         mainPage: MainPageInitialState,
+        cafePage: CafeInitialState,
+        coffeePage: CoffeeInitialState,
     };
 }

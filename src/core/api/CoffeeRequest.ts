@@ -60,7 +60,7 @@ export class ProductClientRequest extends BaseRequest {
             .catch(BaseRequest.handleError);
     }
 
-    getProductsCafe(myCafe: CafeRequest, config: any = {}): Promise<ProductBriefInfo[] | null> {
+    getProductsCafe(myCafe: CafeRequest, config: any = {}): Promise<ProductBriefInfo[]> {
 
         return this.fetch(
             `/api/Product/GetProductsCafe`,
@@ -219,7 +219,7 @@ export interface ICafeInfo {
 }
 
 export class CafeRequest implements ICafeRequest {
-    sessionId: string;
+    sessionId: string | null;
     cafeId: string;
 
     constructor(data?: ICafeRequest) {
@@ -253,7 +253,7 @@ export class CafeRequest implements ICafeRequest {
 }
 
 export interface ICafeRequest {
-    sessionId: string;
+    sessionId: string | null;
     cafeId: string;
 }
 
@@ -313,7 +313,7 @@ export interface IProductBriefInfo {
 }
 
 export class ProductRequest implements IProductRequest {
-    sessionId: string;
+    sessionId: string | null;
     productId: string;
 
     constructor(data?: IProductRequest) {
@@ -347,7 +347,7 @@ export class ProductRequest implements IProductRequest {
 }
 
 export interface IProductRequest {
-    sessionId: string;
+    sessionId: string | null;
     productId: string;
 }
 
