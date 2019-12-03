@@ -3,7 +3,7 @@ import {
     NavigationActions,
     DrawerActions,
     NavigationToggleDrawerAction,
-    NavigationCloseDrawerAction
+    NavigationCloseDrawerAction,
 } from "react-navigation";
 import {SimpleThunk} from "../common/simpleThunk";
 import {actionCreator} from "../core/store";
@@ -33,12 +33,10 @@ export class Actions {
     closeMenu = closeMenu();
 
     navigateToInDevelopment = simpleToRoute(NavigationPages.inDeveloping);
-    navigateToPlayground = simpleToRoute(NavigationPages.playground);
-    navigateToCurrentRun = simpleToRoute(NavigationPages.currentRun);
-    navigateToRun = routeWithParams<ICommonNavParams>(NavigationPages.currentRun);
-    navigateToPlannedRuns = simpleToRoute(NavigationPages.plannedRuns);
-    navigateToFeed = simpleToRoute(NavigationPages.feed);
     navigateToCafePage = routeWithParams<ICommonNavParams>(NavigationPages.cafePage);
+    navigateToCoffeePage = routeWithParams<ICommonNavParams>(NavigationPages.coffeePage);
+    navigateToRegPage  = simpleToRoute(NavigationPages.regPage);
+    navigateToAuth = simpleToRoute(NavigationPages.auth);
 
     navigateToBack = (): SimpleThunk => {
         return async (dispatch, getState): Promise<void> => {

@@ -4,9 +4,8 @@ import {IAppState} from "./appState";
 import {CoreActions} from "./coreActions";
 import {INotificationInfo, SystemActions} from "./systemActions";
 import {ISystemState, SystemInitialState} from "./systemState";
-import {AuthActions, IAuthParams} from "../../modules/auth/authActions";
 import {Success} from "typescript-fsa";
-import {Auth2Actions} from "../../modules/auth2/auth2Actions";
+import {AuthActions} from "../../modules/auth/authActions";
 import {IAuth2Params} from "../../types/interfaces";
 
 function rehydrateHandler(state: ISystemState, rehydratedState: IAppState): ISystemState {
@@ -17,7 +16,7 @@ function setTokenHandler(state: ISystemState, token: string): ISystemState {
     return newState(state, {authToken: token});
 }
 
-function loginDoneHandler(state: ISystemState, success: Success<IAuthParams, string>): ISystemState {
+function loginDoneHandler(state: ISystemState, success: Success<IAuth2Params, string>): ISystemState {
     return newState(state, {authToken: success.result});
 }
  function login2DoneHandler(state: ISystemState, {result}: Success<IAuth2Params, string>): ISystemState {
@@ -33,5 +32,5 @@ export const systemReducer = reducerWithInitialState(SystemInitialState)
     .case(AuthActions.login.done, loginDoneHandler)
     .case(SystemActions.setToken, setTokenHandler)
     .case(SystemActions.setNotificationInfo, setNotificationInfoHandler)
-     .case(Auth2Actions.login.done, login2DoneHandler )
+     .case(AuthActions.login.done, login2DoneHandler )
     .build();

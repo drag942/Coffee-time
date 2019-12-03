@@ -94,8 +94,8 @@ export class App extends PureComponent<IEmpty, IState> {
     private onStoreConfigured(): void {
         if (__DEV__) {
             DevMenu.addItem(
-                "Navigate to Playground",
-                () => this.store.dispatch(NavigationActions.navigateToPlayground())
+                "Navigate to InDevelopment",
+                () => this.store.dispatch(NavigationActions.navigateToInDevelopment())
             );
         }
 

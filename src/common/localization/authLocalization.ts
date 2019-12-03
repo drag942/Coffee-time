@@ -10,6 +10,8 @@ export const authLocalization = {
         "logoutTitle": "Выход из системы",
         "logoutConfirmation": "Вы точно хотите выйти?",
         "logout": "Выйти",
-        "stay": "Остаться"
+        "stay": "Остаться",
+        "registation" : "Регистрация",
+        "confrimPassword": "Повторить пароль",
     }
 };

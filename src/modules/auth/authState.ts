@@ -1,13 +1,9 @@
-export interface IAuthState {
-    isAuthenticating: boolean;
+export interface IAuthState2 {
+    isAuthorizing: boolean;
     error: string | null;
-    errorSource: ErrorSource | null;
 }
 
-export const AuthInitialState: IAuthState = {
-    isAuthenticating: false,
+export const AuthInitialState2: IAuthState2 = {
+    isAuthorizing: false,
     error: null,
-    errorSource: null
 };
-
-export type ErrorSource = "email" | "password" | "both";

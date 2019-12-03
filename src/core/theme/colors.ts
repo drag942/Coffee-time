@@ -17,4 +17,5 @@ export class Colors {
     static pastel = "#FFF2CE";
     static transparent = "transparent";
     static browny = "#b4c39d";
+    static greyLight = "#f9f9f9";
 }

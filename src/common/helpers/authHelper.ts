@@ -1,9 +1,9 @@
 import {localization} from "../localization/localization";
-import {IAuthParams} from "../../modules/auth/authActions";
+import {IAuth2Params} from "../../types/interfaces";
 
 export class AuthHelper {
-    static checkParams(params: IAuthParams): void {
-        this.isEmail(params.email);
+    static checkParams(params: IAuth2Params): void {
+        this.isEmail(params.login);
         this.checkPassword(params.password);
     }
 

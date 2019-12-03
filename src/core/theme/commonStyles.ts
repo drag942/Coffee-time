@@ -1,7 +1,8 @@
-import {ImageStyle, Platform,  ViewStyle} from "react-native";
+import {ImageStyle, Platform, TextStyle, ViewStyle} from "react-native";
 import {styleSheetCreate, styleSheetFlatten} from "../../common/utils";
 import {Colors} from "./colors";
 import {Fonts} from "./fonts";
+import {windowWidth} from "./common";
 
 export const CommonStyles = styleSheetCreate({
     flex1: {
@@ -26,9 +27,16 @@ const commonHeaderTitleStyle = {
     fontSize: 20,
     fontFamily: Fonts.lobster,
     color: Colors.black,
+} as TextStyle;
+
+const commonHeaderImageStyle = {
+    width: windowWidth / 4,
+    height: 35,
+    marginHorizontal: windowWidth / 4,
 } as ImageStyle;
 
 const commonHeaderStyle = {
+    justifyContent: "flex-start",
     borderBottomWidth: 0,
     borderBottomColor: Colors.transparent,
     ...Platform.select({
@@ -38,11 +46,12 @@ const commonHeaderStyle = {
             shadowOffset: {width: 0, height: 4},
         },
         android: {
-            elevation: 8
+            elevation: 8,
         }}),
 } as ViewStyle;
 
 export const CommonHeaderStyles = styleSheetCreate({
     headerTitleStyle: styleSheetFlatten([commonHeaderTitleStyle, {color: Colors.warmGreyTwo}]),
     headerStyle: styleSheetFlatten([commonHeaderStyle, {backgroundColor: Colors.white}]),
+    headerImageStyle: commonHeaderImageStyle,
 });

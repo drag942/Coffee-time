@@ -1,53 +1,49 @@
-import React from "react";
-import {Image, ImageStyle, Keyboard, KeyboardAvoidingView, Text, TextStyle, TouchableOpacity, View, ViewStyle} from "react-native";
-import {styleSheetCreate} from "../../common/utils";
+import {BaseReduxComponent} from "../../core/BaseComponent";
+import {PlainHeader} from "../../common/components/Headers";
+import {Image, ImageStyle, Keyboard, KeyboardAvoidingView, TouchableOpacity, View, ViewStyle} from "react-native";
 import {Colors, CommonStyles, isIos} from "../../core/theme";
-import {NoHeader} from "../../common/components/Headers";
+import {ImageResources} from "../../common/ImageResources.g";
+import {AuthTextInput} from "../../common/components/AuthTextInput";
 import {localization} from "../../common/localization/localization";
 import {MainButton} from "../../common/components/MainButton";
 import {ButtonType} from "../../common/enums/buttonType";
-import {BaseReduxComponent} from "../../core/BaseComponent";
+import React from "react";
+import {styleSheetCreate} from "../../common/utils";
 import {connectAdv} from "../../core/store";
 import {IAppState} from "../../core/store/appState";
 import {Dispatch} from "redux";
-import {AuthAsyncActions} from "./authAsyncActions";
-import {AuthTextInput} from "../../common/components/AuthTextInput";
-import {ImageResources} from "../../common/ImageResources.g";
-import {appSettingsProvider} from "../../core/settings";
-import {NavigationActions} from "../../navigation/navigation";
+import {RegPageAsyncActions} from "./regPageAsyncActions";
 
 interface IStateProps {
-    isAuthorizing: boolean;
+    isReg: boolean;
     error: string ;
 }
 
 interface IDispatchProps {
-    login: (login: string, password: string) => void;
-    navigateToRegPage: () => void;
+    registration: (login: string, password: string) => void;
 }
 
- interface IState {
-     isDisabled: boolean;
- }
+interface IState {
+    isDisabled: boolean;
+}
 
 @connectAdv(
-    ({auth2}: IAppState): IStateProps => ({
-        isAuthorizing: auth2.isAuthorizing,
-        error: auth2.error || ""
+    ({regPage}: IAppState): IStateProps => ({
+        isReg: regPage.isReg,
+        error: regPage.error || ""
     }),
     (dispatch: Dispatch): IDispatchProps => ({
-        login: (login: string, password: string): void => {
-            dispatch(AuthAsyncActions.login(login, password));
-        },
-        navigateToRegPage: (): void => {
-          dispatch(NavigationActions.navigateToRegPage());
+        registration: (email: string, password: string): void => {
+                dispatch(RegPageAsyncActions.registration(email, password));
         },
     }),
 )
-export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
-    static navigationOptions = NoHeader();
-    private login: string = "";
+
+export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
+    static navigationOptions = PlainHeader(undefined, true);
+    private email: string = "";
     private password: string = "";
+    private confrimPassword: string = "";
 
     constructor(props: IEmpty) {
         super(props);
@@ -55,8 +51,8 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
     }
 
     render(): JSX.Element {
-        const isAuthorizing = this.stateProps.isAuthorizing;
-        const isDisabled = this.state.isDisabled || isAuthorizing;
+        const isReg = this.stateProps.isReg;
+        const isDisabled = this.state.isDisabled || isReg;
 
         return(
             <TouchableOpacity style={CommonStyles.flex1} onPress={Keyboard.dismiss} activeOpacity={1}>
@@ -71,24 +67,28 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
                             containerStyle={styles.input}
                             label={localization.auth.email}
                             onChangeText={this.onLoginTextChange}
+                            keyboardType={"email-address"}
                         />
                         <AuthTextInput
                             label={localization.auth.password}
                             containerStyle={styles.input}
                             secureTextEntry={true}
                             onChangeText={this.onPasswordTextChange}
-                            keyboardType={"email-address"}
                             enablesReturnKeyAutomatically={true}
                         />
-                        <TouchableOpacity onPress={this.onRegPress} style={styles.regContainer}>
-                            <Text style={styles.regText}>{localization.auth.registation}</Text>
-                        </TouchableOpacity>
+                        <AuthTextInput
+                            label={localization.auth.confrimPassword}
+                            containerStyle={styles.input}
+                            secureTextEntry={true}
+                            onChangeText={this.onConfirmPasswordTextChange}
+                            enablesReturnKeyAutomatically={true}
+                        />
                         <View style={styles.separator}/>
                         <MainButton
                             buttonType={isDisabled ? ButtonType.disabled : ButtonType.positive}
                             disabled={isDisabled}
-                            title={localization.auth.signIn}
-                            onPress={this.onLoginPress}
+                            title={localization.auth.registation}
+                            onPress={this.onRegPress}
                         />
                     </View>
                     <View style={styles.footer}/>
@@ -96,16 +96,10 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
             </TouchableOpacity>
         );
     }
-    private onLoginPress = (): void => {
-        if (appSettingsProvider.settings.environment == "Development") {
-            this.login = "string";
-            this.password = "string";
-        }
-        this.dispatchProps.login(this.login, this.password);
-    };
-    private onLoginTextChange = (login: string): void => {
-        this.login = login;
-        if ( this.login == "" || this.password == "" ) {
+
+    private onLoginTextChange = (email: string): void => {
+        this.email = email;
+        if ( this.email == "" || this.password == "" || this.confrimPassword == "") {
             if (this.state.isDisabled == false) {
                 this.setState({isDisabled: true});
             }
@@ -115,7 +109,7 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
     };
     private onPasswordTextChange = (password: string): void => {
         this.password = password;
-        if (this.login == "" || this.password == "") {
+        if (this.email == "" || this.password == "" || this.confrimPassword == "") {
             if (this.state.isDisabled == false) {
                 this.setState({isDisabled: true});
             }
@@ -123,8 +117,22 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
             this.setState({isDisabled: false});
         }
     };
-    private onRegPress = (): void => {
-       this.dispatchProps.navigateToRegPage();
+    private onConfirmPasswordTextChange = (confirmPassword: string): void => {
+        this.confrimPassword = confirmPassword;
+        if (this.email == "" || this.password == "" || this.confrimPassword == "") {
+            if (this.state.isDisabled == false) {
+                this.setState({isDisabled: true});
+            }
+        } else {
+            this.setState({isDisabled: false});
+        }
+    };
+    onRegPress = (): void => {
+        if (this.password == this.confrimPassword) {
+            this.dispatchProps.registration(this.email, this.password);
+        } else {
+            alert("Пароли не совпадают");
+        }
     };
 }
 
@@ -141,26 +149,16 @@ const styles = styleSheetCreate({
     } as ViewStyle,
     background: {
         flex: 4,
-         resizeMode: "contain",
+        resizeMode: "contain",
         alignSelf: "center"
     } as ImageStyle,
     separator: {
         marginVertical: 20,
     } as ViewStyle,
     input: {
-         marginTop: 30,
+        marginTop: 30,
     }as ViewStyle,
     footer: {
         flex: 3,
-    } as ViewStyle,
-    regContainer: {
-        marginTop: 20,
-        alignSelf: "center"
-    } as ViewStyle,
-    regText: {
-        color: Colors.browny,
-        fontSize: 16,
-        textDecorationLine: "underline",
-
-    } as TextStyle
+    } as ViewStyle
 });
