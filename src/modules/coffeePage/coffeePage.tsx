@@ -24,8 +24,8 @@ interface IStateProps {
 
 interface IDispatchProps {
     getProduct: () => void;
-    setFavorite: () => void;
-    unsetFavorite: () => void;
+    setFavorite: (callback: () => void) => void;
+    unsetFavorite: (callback: () => void) => void;
 }
 
 interface IProps extends IReduxProps<IStateProps, IEmpty> {
@@ -39,14 +39,13 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
     }),
     (dispatch: Dispatch, ownProps: INavParam<ICommonNavParams>): IDispatchProps => ({
         getProduct: (): void => {
-            console.log(ownProps.navigation.state.params!.id);
             dispatch(CoffeePageAsyncActions.getProduct(ownProps.navigation.state.params!.id));
         },
-        setFavorite: (): void => {
-            dispatch(CoffeePageAsyncActions.setFavorite(ownProps.navigation.state.params!.id));
+        setFavorite: (callback: () => void): void => {
+            dispatch(CoffeePageAsyncActions.setFavorite(ownProps.navigation.state.params!.id, () => callback()));
         },
-        unsetFavorite: (): void => {
-            dispatch(CoffeePageAsyncActions.unsetFavorite(ownProps.navigation.state.params!.id));
+        unsetFavorite: (callback: () => void): void => {
+            dispatch(CoffeePageAsyncActions.unsetFavorite(ownProps.navigation.state.params!.id, () => callback()));
         },
     })
 )
@@ -102,13 +101,10 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
         );
     }
     private setFavorite = (): void => {
-        //TODO: add callback in setFavour instead timeout(in right api new object is result)
-        this.dispatchProps.setFavorite();
-        setTimeout(() => this.dispatchProps.getProduct(), 100);
+        this.dispatchProps.setFavorite(this.dispatchProps.getProduct);
     };
     private unsetFavorite = (): void => {
-        this.dispatchProps.unsetFavorite();
-        setTimeout(() => this.dispatchProps.getProduct(), 100);
+        this.dispatchProps.unsetFavorite(this.dispatchProps.getProduct);
 }
 }
 

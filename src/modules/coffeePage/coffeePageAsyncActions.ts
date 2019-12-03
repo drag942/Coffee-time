@@ -27,7 +27,7 @@ export class CoffeePageAsyncActions {
             }
         };
     }
-    static setFavorite(productId: string): SimpleThunk {
+    static setFavorite(productId: string, callback: () => void): SimpleThunk {
         return async function(dispatch: Dispatch, getState: () => IAppState): Promise<void> {
             const params: IEmpty = {
             };
@@ -42,9 +42,11 @@ export class CoffeePageAsyncActions {
                 showToast(error.message);
                 dispatch(CoffeePageActions.setFavorite.failed({params, error}));
             }
+            callback();
         };
+
     }
-    static unsetFavorite(productId: string): SimpleThunk {
+    static unsetFavorite(productId: string, callback: () => void): SimpleThunk {
         return async function(dispatch: Dispatch, getState: () => IAppState): Promise<void> {
             const params: IEmpty = {
             };
@@ -59,6 +61,7 @@ export class CoffeePageAsyncActions {
                 showToast(error.message);
                 dispatch(CoffeePageActions.setFavorite.failed({params, error}));
             }
+            callback();
         };
     }
 }

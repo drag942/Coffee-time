@@ -24,10 +24,10 @@ export class ImageResources {
     static readonly image_eye_non: ImageURISource = require("../../../resources/images/image_eye_non.png");
     static readonly image_menu: ImageURISource = require("../../../resources/images/image_menu.png");
     static readonly image_more: ImageURISource = require("../../../resources/images/image_more.png");
+    static readonly image_no_coffe: ImageURISource = require("../../../resources/images/image_no_coffe.png");
     static readonly image_photo: ImageURISource = require("../../../resources/images/image_photo.png");
     static readonly image_search: ImageURISource = require("../../../resources/images/image_search.png");
     static readonly image_x: ImageURISource = require("../../../resources/images/image_x.png");
     static readonly latte_art_heart: ImageURISource = require("../../../resources/images/Latte_Art_Heart.jpg");
     static readonly logo: ImageURISource = require("../../../resources/images/logo.png");
-    static readonly splash: ImageURISource = require("../../../resources/images/splash.png");
 }

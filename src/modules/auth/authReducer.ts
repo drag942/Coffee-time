@@ -1,33 +1,24 @@
-import {Failure} from "typescript-fsa";
 import {reducerWithInitialState} from "typescript-fsa-reducers";
+import {AuthInitialState2, IAuthState2} from "./authState";
 import {newState} from "../../common/newState";
-import {CoreActions} from "../../core/store";
-import {AuthActions, IAuthParams} from "./authActions";
-import {AuthInitialState, IAuthState} from "./authState";
+import {Failure} from "typescript-fsa";
+import {IAuth2Params} from "../../types/interfaces";
+import {AuthActions} from "./authActions";
 
-function rehydrate(): IAuthState {
-    return {...AuthInitialState};
+function loginStartedHandler(state: IAuthState2): IAuthState2 {
+    return newState(state, {isAuthorizing: true, error: null});
 }
 
-function loginByEmailStarted(state: IAuthState): IAuthState {
-    return newState(state, {error: null, errorSource: null, isAuthenticating: true});
+function loginDoneHandler(state: IAuthState2): IAuthState2 {
+    return newState(state, {isAuthorizing: false, error: null});
 }
 
-function loginByEmailDone(state: IAuthState): IAuthState {
-    return newState(state, {error: null, errorSource: null, isAuthenticating: false});
+function loginFailedHandler(state: IAuthState2, failed: Failure<IAuth2Params, Error>): IAuthState2 {
+    return newState(state, {isAuthorizing: false, error: failed.error.message});
 }
 
-function loginByEmailFailed(state: IAuthState, failed: Failure<IAuthParams, Error>): IAuthState {
-    return newState(state, {
-        error: failed.error.message,
-        isAuthenticating: false,
-        errorSource: failed.params.errorSource
-    });
-}
-
-export const authReducer = reducerWithInitialState(AuthInitialState)
-    .case(CoreActions.rehydrate, rehydrate)
-    .case(AuthActions.login.started, loginByEmailStarted)
-    .case(AuthActions.login.done, loginByEmailDone)
-    .case(AuthActions.login.failed, loginByEmailFailed)
+export const authReducer = reducerWithInitialState(AuthInitialState2)
+    .case(AuthActions.login.started, loginStartedHandler)
+    .case(AuthActions.login.done, loginDoneHandler)
+    .case(AuthActions.login.failed, loginFailedHandler)
 ;

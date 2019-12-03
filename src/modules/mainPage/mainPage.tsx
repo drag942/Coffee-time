@@ -37,6 +37,12 @@ interface IDispatchProps {
     getCafes: () => void;
     navigateToCafePage: (id: string) => void;
 }
+
+const options = [
+    {value: 0, imageIcon: ImageResources.icon_list as string , label: ""},
+    {value: 1, imageIcon: ImageResources.icon_map as string, label: ""},
+];
+
 @connectAdv(({mainPage}: IAppState): IStateProps => ({
         cafes: mainPage.cafes,
         loadState: mainPage.loadState,
@@ -134,18 +140,14 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
 
     private renderEmptyComponent = (): JSX.Element => {
         return (
-            <EmptyComponent title={"Список пуст"}/>
+            <EmptyComponent title={"Здесь ничего пока нет))"} image={ImageResources.image_no_coffe}/>
         );
     };
     private renderCheckBox = (): JSX.Element => {
         return (
-            /*TODO: fix linter errors and cache this array*/
             <SwitchSelector
                 style={styles.switchView}
-                options={[
-                    {value: 0, imageIcon: ImageResources.icon_list as string, label: "0"},
-                    {value: 1, imageIcon: ImageResources.icon_map as string, label: "0"},
-                ]}
+                options={options}
                 initial={this.state.tabs.index}
                 value={this.state.tabs.index}
                 hasPadding={true}

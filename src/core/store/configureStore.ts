@@ -5,7 +5,6 @@ import {PersistConfig} from "redux-persist/es/types";
 import {buildStack} from "redux-stack";
 import {newState} from "../../common/newState";
 import {ignorePromise} from "../../common/utils";
-import {IEntitiesState} from "../../modules/entities/entitiesState";
 import {NavigationConfig} from "../../navigation/config";
 import {bugsnagLog, BugsnapConfiguration} from "../BugsnapConfiguration";
 import {appSettingsProvider} from "../settings";
@@ -15,7 +14,6 @@ import {keyboardDismissOnNavigation} from "./init/keyboardClose";
 import {reduxLoggerInit} from "./init/loggerInit";
 import {promiseInit} from "./init/promiseInit";
 import {thunkInit} from "./init/thunkInit";
-import {entitiesStateTransform} from "../../modules/entities";
 import AsyncStorage from "@react-native-community/async-storage";
 
 export enum MigrateStoreMode {
@@ -47,7 +45,6 @@ export function configureStore(
         storage: AsyncStorage,
         debug: appSettingsProvider.settings.environment == "Development",
         migrate: migrateStore.get(options.migrateMode)! as any,
-        transforms: [entitiesStateTransform],
     };
     const combinedReducer = createMainReducer();
     const mainReducer = persistReducer(persistConfig, combinedReducer);
@@ -86,9 +83,6 @@ function tryProcessStateUpdate(state: IAppState): Promise<IAppState> {
                 authToken: nState.system.authToken,
                 notificationInfo: nState.system.notificationInfo,
             },
-            entities: {
-                plannedRuns: new Map(),
-            } as IEntitiesState
         });
     } else {
         resultState = Object.assign({}, AppInitialState, nState);
@@ -111,9 +105,6 @@ function resetStateWithToken(state: IAppState): Promise<IAppState> {
                 authToken: null,
                 notificationInfo: state.system.notificationInfo,
             },
-            entities: {
-                plannedRuns: new Map(),
-            } as IEntitiesState
         }));
 }
 
@@ -131,8 +122,5 @@ function resetState(state: IAppState): Promise<IAppState> {
                 authToken: state.system.authToken,
                 notificationInfo: state.system.notificationInfo,
             },
-            entities: {
-                plannedRuns: new Map(),
-            } as IEntitiesState
         }));
 }
