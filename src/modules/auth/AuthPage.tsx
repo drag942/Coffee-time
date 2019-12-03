@@ -116,7 +116,7 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
     private onPasswordTextChange = (password: string): void => {
         this.password = password;
         if (this.login == "" || this.password == "") {
-            if (this.state.isDisabled == true) {
+            if (this.state.isDisabled == false) {
                 this.setState({isDisabled: true});
             }
         } else {
