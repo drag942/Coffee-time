@@ -42,6 +42,7 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
             dispatch(CoffeePageAsyncActions.getProduct(ownProps.navigation.state.params!.id));
         },
         setFavorite: (callback: () => void): void => {
+            //TODO: why you wrap function by function ?
             dispatch(CoffeePageAsyncActions.setFavorite(ownProps.navigation.state.params!.id, () => callback()));
         },
         unsetFavorite: (callback: () => void): void => {

@@ -138,11 +138,11 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
 
     };
 
-    private renderEmptyComponent = (): JSX.Element => {
-        return (
-            <EmptyComponent title={"Здесь ничего пока нет))"} image={ImageResources.image_no_coffe}/>
-        );
-    };
+    private renderEmptyComponent = (): JSX.Element => (
+        //TODO: bad text
+        <EmptyComponent title={"Здесь ничего пока нет))"} image={ImageResources.image_no_coffe}/>
+    );
+
     private renderCheckBox = (): JSX.Element => {
         return (
             <SwitchSelector

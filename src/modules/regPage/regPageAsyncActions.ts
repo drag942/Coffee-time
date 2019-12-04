@@ -19,6 +19,7 @@ export class RegPageAsyncActions {
 
             try {
                 dispatch(RegPageActions.registration.started(params));
+                //TODO: check all aligns and empty lines
                     AuthHelper2.checkEmail(params.email);
                     AuthHelper2.checkPassword(params.password);
                      const userRequest  = new UserRequest({email: email, password});

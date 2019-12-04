@@ -17,6 +17,7 @@ export class AuthAsyncActions {
 
             try {
                 dispatch(AuthActions.login.started(params));
+                //TODO: why you use triple = ?
                 if (appSettingsProvider.settings.environment !== "Development") {
                     AuthHelper2.checkEmail(params.login);
                     AuthHelper2.checkPassword(params.password);

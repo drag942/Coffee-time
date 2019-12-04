@@ -42,6 +42,7 @@ export class CoffeePageAsyncActions {
                 showToast(error.message);
                 dispatch(CoffeePageActions.setFavorite.failed({params, error}));
             }
+            //TODO: callback need use after success request
             callback();
         };
 

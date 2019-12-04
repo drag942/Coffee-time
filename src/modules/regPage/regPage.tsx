@@ -34,11 +34,10 @@ interface IState {
     }),
     (dispatch: Dispatch): IDispatchProps => ({
         registration: (email: string, password: string): void => {
-                dispatch(RegPageAsyncActions.registration(email, password));
+            dispatch(RegPageAsyncActions.registration(email, password));
         },
     }),
 )
-
 export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
     static navigationOptions = PlainHeader(undefined, true);
     private email: string = "";
@@ -99,14 +98,18 @@ export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, ISt
 
     private onLoginTextChange = (email: string): void => {
         this.email = email;
+        //TODO: check only changed property
         if ( this.email == "" || this.password == "" || this.confrimPassword == "") {
+            //TODO: use ! instead "== false"
             if (this.state.isDisabled == false) {
                 this.setState({isDisabled: true});
             }
         } else {
+            //TODO: add check state and here(remove false -> false)
             this.setState({isDisabled: false});
         }
     };
+
     private onPasswordTextChange = (password: string): void => {
         this.password = password;
         if (this.email == "" || this.password == "" || this.confrimPassword == "") {
@@ -117,6 +120,7 @@ export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, ISt
             this.setState({isDisabled: false});
         }
     };
+
     private onConfirmPasswordTextChange = (confirmPassword: string): void => {
         this.confrimPassword = confirmPassword;
         if (this.email == "" || this.password == "" || this.confrimPassword == "") {
@@ -127,6 +131,7 @@ export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, ISt
             this.setState({isDisabled: false});
         }
     };
+    //TODO: set private modificator
     onRegPress = (): void => {
         if (this.password == this.confrimPassword) {
             this.dispatchProps.registration(this.email, this.password);
