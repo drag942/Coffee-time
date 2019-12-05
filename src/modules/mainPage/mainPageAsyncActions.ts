@@ -19,7 +19,7 @@ export class MainPageAsyncActions {
                 const result = await cafeClientRequest.getAll(Auth.sessionId);
                 dispatch(MainPageActions.getCafes.done({params, result}));
             } catch (error) {
-                showToast(error.message)
+                showToast(error.message);
                 dispatch(MainPageActions.getCafes.failed({params, error}));
             }
         };

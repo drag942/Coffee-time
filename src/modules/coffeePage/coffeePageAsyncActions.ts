@@ -35,17 +35,14 @@ export class CoffeePageAsyncActions {
                 dispatch(CoffeePageActions.setFavorite.started(params));
                 const sessionId =  getState().system.authToken;
                 const productRequest = new ProductRequest({productId, sessionId});
-
                 const result = await favoriteClientRequest.set(productRequest);
                 dispatch(CoffeePageActions.setFavorite.done({params, result}));
+                callback();
             } catch (error) {
                 showToast(error.message);
                 dispatch(CoffeePageActions.setFavorite.failed({params, error}));
             }
-            //TODO: callback need use after success request
-            callback();
         };
-
     }
     static unsetFavorite(productId: string, callback: () => void): SimpleThunk {
         return async function(dispatch: Dispatch, getState: () => IAppState): Promise<void> {
@@ -55,14 +52,13 @@ export class CoffeePageAsyncActions {
                 dispatch(CoffeePageActions.unsetFavorite.started(params));
                 const sessionId =  getState().system.authToken;
                 const productRequest = new ProductRequest({productId, sessionId});
-
                 const result = await favoriteClientRequest.unset(productRequest);
                 dispatch(CoffeePageActions.unsetFavorite.done({params, result}));
+                callback();
             } catch (error) {
                 showToast(error.message);
                 dispatch(CoffeePageActions.setFavorite.failed({params, error}));
             }
-            callback();
         };
     }
 }

@@ -1,6 +1,6 @@
 {
   "appName": "trucker",
-  "environment": "Production",
+  "environment": "Development",
   "serverUrl": "https://jsonplaceholder.typicode.com",
   "identityUrl": "insert some here",
   "bugReportApiKey": "1fb49b4c382fb8d06ab54c3e150d0810",

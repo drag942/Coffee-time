@@ -30,4 +30,5 @@ export class ImageResources {
     static readonly image_x: ImageURISource = require("../../../resources/images/image_x.png");
     static readonly latte_art_heart: ImageURISource = require("../../../resources/images/Latte_Art_Heart.jpg");
     static readonly logo: ImageURISource = require("../../../resources/images/logo.png");
+    static readonly splash: ImageURISource = require("../../../resources/images/splash.png");
 }

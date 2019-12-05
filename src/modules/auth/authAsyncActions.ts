@@ -17,14 +17,12 @@ export class AuthAsyncActions {
 
             try {
                 dispatch(AuthActions.login.started(params));
-                //TODO: why you use triple = ?
-                if (appSettingsProvider.settings.environment !== "Development") {
+                if (appSettingsProvider.settings.environment != "Development") {
                     AuthHelper2.checkEmail(params.login);
                     AuthHelper2.checkPassword(params.password);
                 }
 
                 const token =  await Auth.getSessionId(params.login, params.password) || "NullToken";
-                console.log(token);
 
                 dispatch(AuthActions.login.done({params, result: token}));
             } catch (error) {

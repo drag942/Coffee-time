@@ -19,10 +19,9 @@ export class RegPageAsyncActions {
 
             try {
                 dispatch(RegPageActions.registration.started(params));
-                //TODO: check all aligns and empty lines
-                    AuthHelper2.checkEmail(params.email);
-                    AuthHelper2.checkPassword(params.password);
-                     const userRequest  = new UserRequest({email: email, password});
+                AuthHelper2.checkEmail(params.email);
+                AuthHelper2.checkPassword(params.password);
+                const userRequest  = new UserRequest({email: email, password});
                 const token =  await userClientRequest.register(userRequest) || "NullToken";
                 dispatch(RegPageActions.registration.done({params, result: token}));
             } catch (error) {

@@ -96,6 +96,7 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
             </TouchableOpacity>
         );
     }
+
     private onLoginPress = (): void => {
         if (appSettingsProvider.settings.environment == "Development") {
             this.login = "string";
@@ -103,26 +104,33 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
         }
         this.dispatchProps.login(this.login, this.password);
     };
+
     private onLoginTextChange = (login: string): void => {
         this.login = login;
         if ( this.login == "" || this.password == "" ) {
-            if (this.state.isDisabled == false) {
+            if (!this.state.isDisabled) {
                 this.setState({isDisabled: true});
             }
         } else {
-            this.setState({isDisabled: false});
+            if (this.state.isDisabled) {
+                this.setState({isDisabled: false});
+            }
         }
     };
+
     private onPasswordTextChange = (password: string): void => {
         this.password = password;
         if (this.login == "" || this.password == "") {
-            if (this.state.isDisabled == false) {
+            if (!this.state.isDisabled) {
                 this.setState({isDisabled: true});
             }
         } else {
-            this.setState({isDisabled: false});
+            if (this.state.isDisabled) {
+                this.setState({isDisabled: false});
+            }
         }
     };
+
     private onRegPress = (): void => {
        this.dispatchProps.navigateToRegPage();
     };

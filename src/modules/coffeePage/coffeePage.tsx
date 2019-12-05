@@ -24,8 +24,8 @@ interface IStateProps {
 
 interface IDispatchProps {
     getProduct: () => void;
-    setFavorite: (callback: () => void) => void;
-    unsetFavorite: (callback: () => void) => void;
+    setFavorite: () => void;
+    unsetFavorite: () => void;
 }
 
 interface IProps extends IReduxProps<IStateProps, IEmpty> {
@@ -41,12 +41,13 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
         getProduct: (): void => {
             dispatch(CoffeePageAsyncActions.getProduct(ownProps.navigation.state.params!.id));
         },
-        setFavorite: (callback: () => void): void => {
-            //TODO: why you wrap function by function ?
-            dispatch(CoffeePageAsyncActions.setFavorite(ownProps.navigation.state.params!.id, () => callback()));
+        setFavorite: (): void => {
+            dispatch(CoffeePageAsyncActions.setFavorite(ownProps.navigation.state.params!.id,
+                () => dispatch(CoffeePageAsyncActions.getProduct(ownProps.navigation.state.params!.id))));
         },
-        unsetFavorite: (callback: () => void): void => {
-            dispatch(CoffeePageAsyncActions.unsetFavorite(ownProps.navigation.state.params!.id, () => callback()));
+        unsetFavorite: (): void => {
+            dispatch(CoffeePageAsyncActions.unsetFavorite(ownProps.navigation.state.params!.id,
+                () => dispatch(CoffeePageAsyncActions.getProduct(ownProps.navigation.state.params!.id))));
         },
     })
 )
@@ -95,17 +96,15 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
                    <TouchableOpacity style={styles.buttonStyle} disabled={true}>
                        <Text style={styles.order}>{localization.pages.order}</Text>
                    </TouchableOpacity>
-
                </View>
-
            </View>
         );
     }
     private setFavorite = (): void => {
-        this.dispatchProps.setFavorite(this.dispatchProps.getProduct);
+        this.dispatchProps.setFavorite();
     };
     private unsetFavorite = (): void => {
-        this.dispatchProps.unsetFavorite(this.dispatchProps.getProduct);
+        this.dispatchProps.unsetFavorite();
 }
 }
 
