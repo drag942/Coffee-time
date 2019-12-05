@@ -37,19 +37,22 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
         product: coffeePage.product,
         error: coffeePage.error,
     }),
-    (dispatch: Dispatch, ownProps: INavParam<ICommonNavParams>): IDispatchProps => ({
-        getProduct: (): void => {
-            dispatch(CoffeePageAsyncActions.getProduct(ownProps.navigation.state.params!.id));
-        },
+    (dispatch: Dispatch, ownProps: INavParam<ICommonNavParams>): IDispatchProps =>  {
+        const id = ownProps.navigation.state.params!.id;
+        const getProd = (): void => {
+            dispatch(CoffeePageAsyncActions.getProduct(id));
+        };
+
+       return ({
+        getProduct: getProd,
         setFavorite: (): void => {
-            dispatch(CoffeePageAsyncActions.setFavorite(ownProps.navigation.state.params!.id,
-                () => dispatch(CoffeePageAsyncActions.getProduct(ownProps.navigation.state.params!.id))));
+            dispatch(CoffeePageAsyncActions.setFavorite(id, getProd));
         },
         unsetFavorite: (): void => {
-            dispatch(CoffeePageAsyncActions.unsetFavorite(ownProps.navigation.state.params!.id,
-                () => dispatch(CoffeePageAsyncActions.getProduct(ownProps.navigation.state.params!.id))));
+            dispatch(CoffeePageAsyncActions.unsetFavorite(id,  getProd));
         },
-    })
+    });
+    }
 )
 
 export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps, IProps> {
