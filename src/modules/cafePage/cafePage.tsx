@@ -1,7 +1,7 @@
 import React from "react";
 import {connectAdv} from "../../core/store";
 import {IAppState} from "../../core/store/appState";
-import {Image, ImageStyle,  Text, TextStyle, View, ViewStyle} from "react-native";
+import {Image, ImageStyle, Text, TextStyle, View, ViewStyle} from "react-native";
 import {styleSheetCreate} from "../../common/utils";
 import {Colors, CommonStyles, Fonts} from "../../core/theme";
 import {CafeInfo, ProductBriefInfo} from "../../core/api/CoffeeRequest";
@@ -25,10 +25,11 @@ interface IStateProps {
     products: ProductBriefInfo[];
     loadState: LoadState;
     error: string | null;
+    key: boolean;
 }
 
 interface IDispatchProps {
-    getProducts: () => void;
+    getProducts: (loadState: LoadState) => void;
     navigateToCoffeePage: (id: string) => void;
 }
 
@@ -39,13 +40,14 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
 @connectAdv(
     ({mainPage, cafePage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps => ({
         cafe: mainPage.cafes.find(item => item.id == ownProps.navigation.state.params!.id)!,
-        products: cafePage.products,
+        products: cafePage.products.get(ownProps.navigation.state.params!.id)!,
         loadState: cafePage.loadState,
         error: cafePage.error,
+        key: cafePage.products.has(ownProps.navigation.state.params!.id),
     }),
     (dispatch: Dispatch, ownProps: INavParam<ICommonNavParams>): IDispatchProps => ({
-        getProducts: (): void => {
-            dispatch(CafePageAsyncActions.getProducts(ownProps.navigation.state.params!.id));
+        getProducts: (loadState: LoadState): void => {
+            dispatch(CafePageAsyncActions.getProducts(loadState, ownProps.navigation.state.params!.id));
         },
         navigateToCoffeePage: (id: string): void => {
             dispatch(NavigationActions.navigateToCoffeePage({id}));
@@ -55,8 +57,10 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
 
 export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IProps> {
     static navigationOptions = PlainHeader( undefined, true);
+
     componentDidMount(): void {
-        this.dispatchProps.getProducts();
+        const {products,  key} = this.stateProps;
+        this.dispatchProps.getProducts(products != undefined && key  ? LoadState.allIsLoaded : LoadState.firstLoad );
     }
 
     render(): JSX.Element {
@@ -82,8 +86,8 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
                         EmptyComponent={this.renderEmptyComponent}
                         renderItem={this.renderProduct}
                         tryAgain={this.tryAgain}
-                        onRefresh={this.tryAgain}
-                        loadMore={this.tryAgain}
+                        onRefresh={this.pullToRefresh}
+                        loadMore={this.loadMore}
                         numColumns={2}
                     />
                 </View>
@@ -91,8 +95,17 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
         );
     }
     private tryAgain = (): void => {
-        this.dispatchProps.getProducts();
+        this.dispatchProps.getProducts(LoadState.firstLoad);
     };
+
+    private loadMore = (): void => {
+        this.dispatchProps.getProducts(LoadState.loadingMore);
+    };
+
+    private pullToRefresh = (): void => {
+        this.dispatchProps.getProducts(LoadState.firstLoad);
+    };
+
     private renderEmptyComponent = (): JSX.Element => {
         return (
             <EmptyComponent title={"Список пуст"}/>
