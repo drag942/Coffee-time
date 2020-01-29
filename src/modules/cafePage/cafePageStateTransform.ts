@@ -19,6 +19,6 @@ export const cafePageStateTransform = createTransform(
         }
     },
     {
-        whitelist: ["products"]
+        whitelist: ["cafePage"]
     }
 );

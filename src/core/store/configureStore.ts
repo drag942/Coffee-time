@@ -16,6 +16,7 @@ import {promiseInit} from "./init/promiseInit";
 import {thunkInit} from "./init/thunkInit";
 import AsyncStorage from "@react-native-community/async-storage";
 import {cafePageStateTransform} from "../../modules/cafePage/cafePageStateTransform";
+import {coffeePageStateTransform} from "../../modules/coffeePage/cofeePageStateTransform";
 
 export enum MigrateStoreMode {
     none = "none",
@@ -46,7 +47,7 @@ export function configureStore(
         storage: AsyncStorage,
         debug: appSettingsProvider.settings.environment == "Development",
         migrate: migrateStore.get(options.migrateMode)! as any,
-        transforms: [cafePageStateTransform],
+        transforms: [cafePageStateTransform, coffeePageStateTransform],
     };
     const combinedReducer = createMainReducer();
     const mainReducer = persistReducer(persistConfig, combinedReducer);

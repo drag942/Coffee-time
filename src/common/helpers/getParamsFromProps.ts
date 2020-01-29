@@ -1,10 +1,11 @@
-import {NavigationNavigatorProps} from "react-navigation";
+
 import {assertNotNull} from "../assertNotNull";
 
-export function getParamsFromProps<T>(props: NavigationNavigatorProps<any, any>): T {
-    return assertNotNull(props.navigation).state.params as any;
-}
+export function getParamsFromProps<T>(props: INavParam<T>): T {
+    const params = assertNotNull(props.navigation, "Navigation missing").state.params;
 
+    return assertNotNull(params, "Navigation params missing");
+}
 export interface INavParam<T> {
     navigation: {state: {params?: T}};
 }

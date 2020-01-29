@@ -24,7 +24,7 @@ function getCafesFailedHandler(state: IMainPageState, failed: Failure<IAuth2Para
 }
 
 function rehydradeHandler(state: IMainPageState, rehydratedState: IAppState ): IMainPageState {
-    return newState(rehydratedState.mainPage || state, {loadState: LoadState.allIsLoaded, cafes: rehydratedState.mainPage.cafes});
+    return newState(rehydratedState.mainPage || state, {loadState: LoadState.needLoad, cafes: rehydratedState.mainPage.cafes});
 }
 
 export const mainPageReducer = reducerWithInitialState(MainPageInitialState)

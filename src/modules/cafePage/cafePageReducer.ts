@@ -14,15 +14,14 @@ function getProductsStartedHandler(state: ICafePageState): ICafePageState {
 }
 
 function getProductsDoneHandler(state: ICafePageState, {params, result}: Success<ICafePageParams, ProductBriefInfo[]>): ICafePageState {
-    let products: Map<string, ProductBriefInfo[]>;
-    console.log(params.loadState);
+    const products =  state.products;
     switch (params.loadState) {
         case LoadState.firstLoad:
-            products = new Map<string, ProductBriefInfo[]>();
             products.set(params.id, result);
             break;
         case LoadState.allIsLoaded:
-            products = state.products;
+        case LoadState.pullToRefresh:
+            products.set(params.id, result);
             break;
         default:
             throw new Error(`LoadState ${params.loadState} is not valid in this context.`);
@@ -38,7 +37,7 @@ function getProductsFailedHandler(state: ICafePageState, failed: Failure<ICafePa
 function rehydrateHandler(state: ICafePageState, rehydratedState: IAppState): ICafePageState {
     const nState = rehydratedState.cafePage || state;
 
-    return newState(nState, {loadState: LoadState.needLoad});
+    return newState(nState, {loadState: LoadState.needLoad, products: rehydratedState.cafePage.products});
 }
 
 export const cafePageReducer = reducerWithInitialState(CafeInitialState)

@@ -3,7 +3,7 @@ import {ProductBriefInfo} from "../../core/api/CoffeeRequest";
 import {LoadState} from "../../common/loadState";
 
 export class CafePageActions {
-    static getProducts = actionCreator.async<ICafePageParams, ProductBriefInfo[], Error>("CAFEPAGE/GET_PRODUCTS");
+    static getProducts = actionCreator.async<ICafePageParams, ProductBriefInfo[], Error>("CafePage/GET_PRODUCTS");
 }
 
 export interface ICafePageParams {

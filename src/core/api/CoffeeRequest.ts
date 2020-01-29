@@ -14,6 +14,7 @@ class BaseRequest {
 export class CafeClientRequest extends BaseRequest {
 
     getAll(sessionId: string | null, config: any = {}): Promise<CafeInfo[]> {
+        console.log(sessionId);
         return this.fetch(
             `/api/Cafe/GetAll`,
             Object.assign({

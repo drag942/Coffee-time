@@ -3,12 +3,11 @@ import {LoadState} from "../../common/loadState";
 import {connectAdv} from "../../core/store";
 import {IAppState} from "../../core/store/appState";
 import {Dispatch} from "redux";
-import {View, ViewStyle} from "react-native";
-import {styleSheetCreate} from "../../common/utils";
-import {Colors, isIos, windowWidth} from "../../core/theme";
+import { ImageStyle, TouchableOpacity, View, ViewStyle} from "react-native";
+import {Ref, styleSheetCreate} from "../../common/utils";
+import {Colors, isIos, windowHeight, windowWidth} from "../../core/theme";
 import {FlatListWrapper} from "../../common/components/FlatListWrapper";
 import {defaultIdExtractor} from "../../common/helpers";
-import {EmptyComponent} from "../../common/components/EmptyComponent";
 import {CafeInfo} from "../../core/api/CoffeeRequest";
 import {MainPageAsyncActions} from "./mainPageAsyncActions";
 import {BaseReduxComponent} from "../../core/BaseComponent";
@@ -18,6 +17,12 @@ import {NavigationActions} from "../../navigation/navigation";
 import {NavigationState, TabView} from "react-native-tab-view";
 import {ImageResources} from "../../common/ImageResources.g";
 import SwitchSelector from "react-native-switch-selector";
+import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
+import {EmptyComponent} from "../../common/components/EmptyComponent";
+import Geolocation from "@react-native-community/geolocation";
+import {PERMISSIONS, request} from "react-native-permissions";
+import Carousel, {CarouselStatic} from "react-native-snap-carousel";
+import {CarouselComponent} from "./components/carouselComponent";
 
 interface IStateProps {
     cafes: CafeInfo[];
@@ -43,6 +48,8 @@ const options = [
     {value: 1, imageIcon: ImageResources.icon_map as string, label: ""},
 ];
 
+let initialPosition: any;
+
 @connectAdv(({mainPage}: IAppState): IStateProps => ({
         cafes: mainPage.cafes,
         loadState: mainPage.loadState,
@@ -54,14 +61,18 @@ const options = [
         },
         navigateToCafePage: (id: string): void => {
             dispatch(NavigationActions.navigateToCafePage({id}));
-        }
+            console.log(id);
+        },
     })
 )
 
 export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
     static navigationOptions = PlainHeader(undefined, true);
+    mapRef = new Ref<MapView>();
+    carouselRef = new Ref<CarouselStatic<TouchableOpacity>>();
     componentDidMount(): void {
         this.dispatchProps.getCafes();
+        this.requestLocationPermission();
     }
 
     constructor(props: IEmpty) {
@@ -96,7 +107,6 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
     };
     private handleIndexChange = (index: number): void => {
         this.setState({tabs: {...this.state.tabs, index}});
-        console.log(this.state.tabs.index);
     };
 
     private renderScene = ({route}: { route: IRoute }):
@@ -105,11 +115,10 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
             case "list":
                 return this.renderList();
             case "map":
-                return this.renderEmptyComponent();
+                return this.renderMapComponent();
             default:
                 return null;
-        }
-    };
+        }    };
     private renderList = (): JSX.Element => {
        return (
            <FlatListWrapper
@@ -122,6 +131,7 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
                 tryAgain={this.tryAgain}
                 onRefresh={this.tryAgain}
                 loadMore={this.tryAgain}
+                style={{opacity: 0}as ViewStyle}
            />
        );
     };
@@ -138,9 +148,85 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
 
     };
 
+    private renderMapComponent = (): JSX.Element => {
+       const markers = this.stateProps.cafes.map(element => {
+               const coordinate = {latitude: 0, longitude: 0};
+               coordinate.latitude = parseFloat(element.coordinates.split(",")[0]);
+               coordinate.longitude = parseFloat(element.coordinates.split(",")[1]);
+               const index = this.stateProps.cafes.indexOf(element);
+
+               return (
+                       <Marker
+                           key={element.coordinates}
+                           coordinate={{longitude: coordinate.longitude, latitude: coordinate.latitude}}
+                           onPress={(): void => this.onMarkerPress(index)}
+                       />
+                   );
+           }
+       );
+
+        return (
+            <View style={styles.map}>
+                <MapView
+                    provider={PROVIDER_GOOGLE}
+                    style={styles.map}
+                    initialRegion={initialPosition}
+                    showsUserLocation={true}
+                    ref={this.mapRef.handler}
+                >
+                    {markers}
+                </MapView>
+                <Carousel
+                    data={this.stateProps.cafes}
+                    renderItem={this.renderCarouselItem}
+                    sliderWidth={windowWidth}
+                    itemWidth={225}
+                    itemHeight={250}
+                    containerCustomStyle={styles.carousel}
+                    onSnapToItem={this.onCarouselItemChange}
+                    ref={this.carouselRef.handler}
+                    removeClippedSubviews={false}
+                />
+            </View>
+        );
+      };
+
+    private requestLocationPermission = async (): Promise<void> => {
+        const response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+        console.log("Android: " + response);
+        if (response === "granted") {
+            this.locateCurrentPosition();
+        }
+    };
+
+    private locateCurrentPosition = (): void => {
+        Geolocation.getCurrentPosition(position => {
+            console.log(position);
+
+            initialPosition = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                latitudeDelta: 0.0113,
+                longitudeDelta: 0.0114,
+            };
+        });
+    };
+
     private renderEmptyComponent = (): JSX.Element => (
-        //TODO: bad text
-        <EmptyComponent title={"Здесь ничего пока нет))"} image={ImageResources.image_no_coffe}/>
+        <EmptyComponent
+            image={ImageResources.image_no_coffe}
+            title={"Здесь пока ничего нет"}
+        />
+    );
+
+    private renderCarouselItem = ({item}: {item: CafeInfo}): JSX.Element => (
+        <CarouselComponent
+            id={item.id}
+            title={item.name}
+            address={item.address}
+            imageSource={item.images}
+            onPress={this.dispatchProps.navigateToCafePage}
+        />
     );
 
     private renderCheckBox = (): JSX.Element => {
@@ -159,7 +245,26 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
                 disableValueChangeOnPress={true}
             />
         );
-    }
+    };
+
+    private onCarouselItemChange = (index: number): void => {
+        const location = this.stateProps.cafes[index];
+        const latitude = parseFloat(location.coordinates.split(",")[0]);
+        const longitude = parseFloat(location.coordinates.split(",")[1]);
+        this.mapRef.ref.animateToRegion(
+            {
+                    latitude: latitude,
+                    longitude: longitude,
+                    latitudeDelta: 0.001,
+                    longitudeDelta: 0.001,
+            });
+    };
+
+    private onMarkerPress = (index: number): void => {
+        if (this.carouselRef.hasRef) {
+            this.carouselRef.ref.snapToItem(index);
+        }
+    };
 }
 
 const styles = styleSheetCreate({
@@ -175,4 +280,18 @@ const styles = styleSheetCreate({
     component: {
         paddingTop: 15,
     } as ViewStyle,
+    map: {
+        height: windowHeight,
+        width: windowWidth,
+        position: "absolute",
+    } as ViewStyle,
+    carousel: {
+        position: "absolute",
+        bottom: 0,
+        marginBottom: 120,
+    }as ViewStyle,
+    imageCarousel: {
+        width: windowWidth - 50,
+        height: 150,
+    }as ImageStyle,
 });

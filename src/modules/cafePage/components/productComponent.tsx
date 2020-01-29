@@ -1,7 +1,7 @@
 import React from "react";
 import {PureComponent} from "react";
 import {Image, ImageStyle, Text, TextStyle, TouchableOpacity, View, ViewStyle} from "react-native";
-import {Colors, Fonts} from "../../../core/theme";
+import {Colors, Fonts, windowWidth} from "../../../core/theme";
 import {ImageSource} from "../../../common/utils/ImageSource";
 import {ImageResources} from "../../../common/ImageResources.g";
 import {styleSheetCreate} from "../../../common/utils";
@@ -43,7 +43,7 @@ export class ProductComponent extends PureComponent<IProps> {
 
 const styles = styleSheetCreate({
     container: {
-        flex: 1,
+        width: windowWidth / 2 - 10,
         backgroundColor: Colors.white,
         marginHorizontal: 5,
         marginVertical: 5,

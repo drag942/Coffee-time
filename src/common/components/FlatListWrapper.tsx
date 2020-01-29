@@ -1,13 +1,12 @@
 import _ from "lodash";
 import React, {Component} from "react";
-import {FlatList, FlatListProperties, View, ViewStyle} from "react-native";
+import {FlatList, FlatListProperties, View} from "react-native";
 import {itemLayoutCache, ItemLayoutName} from "../../core/itemLayoutCache";
 import {defaultIdExtractor} from "../helpers";
 import {LoadState} from "../loadState";
 import {LoadingView} from "./LoadingView";
 import {TryAgain} from "./TryAgain";
-import {Colors, CommonStyles} from "../../core/theme";
-import {styleSheetCreate} from "../utils";
+import {CommonStyles} from "../../core/theme";
 import {localization} from "../localization/localization";
 
 interface IState {
@@ -72,7 +71,6 @@ export class FlatListWrapper extends Component<IProps, IState> {
 
             content = (
                 <FlatList
-                    style={styles.list}
                     {...props}
                     getItemLayout={getItemLayout}
                 />
@@ -80,7 +78,7 @@ export class FlatListWrapper extends Component<IProps, IState> {
         }
 
         return (
-            <View style={CommonStyles.flexWhiteBackground}>
+            <View style={CommonStyles.flex1}>
                 <LoadingView isLoading={loadState == LoadState.firstLoad} transparent={false}/>
                 {content}
             </View>
@@ -98,9 +96,3 @@ FlatListWrapper.defaultProps = {
     keyExtractor: defaultIdExtractor,
     errorText: localization.errors.listErrorTitle
 };
-
-const styles = styleSheetCreate({
-    list: {
-        backgroundColor: Colors.whiteTwo,
-    } as ViewStyle,
-});

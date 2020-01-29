@@ -3,13 +3,13 @@ import {connectAdv} from "../../core/store";
 import {IAppState} from "../../core/store/appState";
 import {Image, ImageStyle, Text, TextStyle, View, ViewStyle} from "react-native";
 import {styleSheetCreate} from "../../common/utils";
-import {Colors, CommonStyles, Fonts} from "../../core/theme";
+import {Colors, Fonts, windowHeight, windowWidth} from "../../core/theme";
 import {CafeInfo, ProductBriefInfo} from "../../core/api/CoffeeRequest";
 import {BaseReduxComponent, IReduxProps} from "../../core/BaseComponent";
 import {PlainHeader} from "../../common/components/Headers";
 import {NavigationAction, NavigationLeafRoute, NavigationScreenProp} from "react-navigation";
 import {ICommonNavParams} from "../../navigation/actions";
-import {INavParam} from "../../common/helpers/getParamsFromProps";
+import {getParamsFromProps, INavParam} from "../../common/helpers/getParamsFromProps";
 import {ImageSource} from "../../common/utils/ImageSource";
 import {FlatListWrapper} from "../../common/components/FlatListWrapper";
 import {LoadState} from "../../common/loadState";
@@ -34,20 +34,22 @@ interface IDispatchProps {
 }
 
 interface IProps extends IReduxProps<IStateProps, IEmpty> {
-    navigation: NavigationScreenProp<NavigationLeafRoute<ICommonNavParams>, NavigationAction>;
+    navigation?: NavigationScreenProp<NavigationLeafRoute<ICommonNavParams>, NavigationAction>;
 }
+
+const offsetTop = windowHeight / 2 - 6;
 
 @connectAdv(
     ({mainPage, cafePage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps => ({
-        cafe: mainPage.cafes.find(item => item.id == ownProps.navigation.state.params!.id)!,
-        products: cafePage.products.get(ownProps.navigation.state.params!.id)!,
+        cafe: mainPage.cafes.find(item => item.id == getParamsFromProps(ownProps).id)!,
+        products: cafePage.products.get(getParamsFromProps(ownProps).id)!,
         loadState: cafePage.loadState,
         error: cafePage.error,
-        key: cafePage.products.has(ownProps.navigation.state.params!.id),
+        key: cafePage.products.has(getParamsFromProps(ownProps).id),
     }),
     (dispatch: Dispatch, ownProps: INavParam<ICommonNavParams>): IDispatchProps => ({
         getProducts: (loadState: LoadState): void => {
-            dispatch(CafePageAsyncActions.getProducts(loadState, ownProps.navigation.state.params!.id));
+            dispatch(CafePageAsyncActions.getProducts(loadState, getParamsFromProps(ownProps).id));
         },
         navigateToCoffeePage: (id: string): void => {
             dispatch(NavigationActions.navigateToCoffeePage({id}));
@@ -59,51 +61,46 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
     static navigationOptions = PlainHeader( undefined, true);
 
     componentDidMount(): void {
-        const {products,  key} = this.stateProps;
-        this.dispatchProps.getProducts(products != undefined && key  ? LoadState.allIsLoaded : LoadState.firstLoad );
+        const {key} = this.stateProps;
+        this.dispatchProps.getProducts(key  ? LoadState.allIsLoaded : LoadState.firstLoad );
     }
 
     render(): JSX.Element {
         const cafe = this.stateProps.cafe;
-        const {products, error, loadState} = this.stateProps;
+        const {products, error, key} = this.stateProps;
 
         return(
             <View style={styles.container}>
-                <View style={CommonStyles.flex1}>
-                    <Image source={ImageSource.create(cafe.images)!} style={styles.backgroundImg}/>
-                    <View style={styles.textContainer}>
-                        <Text style={styles.name}>{cafe.name}</Text>
-                        <Text style={styles.address}>{cafe.address}</Text>
-                    </View>
-                </View>
-                <View style={CommonStyles.flex1}>
-                    <FlatListWrapper
-                        style={styles.container}
-                        data={products}
-                        loadState={loadState}
-                        keyExtractor={defaultIdExtractor}
-                        errorText={error}
-                        EmptyComponent={this.renderEmptyComponent}
-                        renderItem={this.renderProduct}
-                        tryAgain={this.tryAgain}
-                        onRefresh={this.pullToRefresh}
-                        loadMore={this.loadMore}
-                        numColumns={2}
+                <View style={styles.containerImg}>
+                    <Image
+                        source={ImageSource.create(cafe.images)!}
+                        style={styles.backgroundImg}
                     />
+                    <Text style={styles.name}>{cafe.name}</Text>
+                    <Text style={styles.address}>{cafe.address}</Text>
                 </View>
+                <FlatListWrapper
+                    contentContainerStyle={styles.containerFlatList}
+                    data={products != undefined ? products : []}
+                    loadState={key ? LoadState.allIsLoaded : LoadState.firstLoad}
+                    keyExtractor={defaultIdExtractor}
+                    errorText={error}
+                    EmptyComponent={this.renderEmptyComponent}
+                    renderItem={this.renderProduct}
+                    onRefresh={this.pullToRefresh}
+                    loadMore={this.loadMore}
+                    numColumns={2}
+                />
             </View>
         );
     }
-    private tryAgain = (): void => {
-        this.dispatchProps.getProducts(LoadState.firstLoad);
-    };
 
     private loadMore = (): void => {
         this.dispatchProps.getProducts(LoadState.loadingMore);
     };
 
     private pullToRefresh = (): void => {
-        this.dispatchProps.getProducts(LoadState.firstLoad);
+        this.dispatchProps.getProducts(LoadState.pullToRefresh);
     };
 
     private renderEmptyComponent = (): JSX.Element => {
@@ -130,39 +127,55 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
 }
 
 const styles = styleSheetCreate({
+    containerFlatList: {
+        marginTop: offsetTop,
+        backgroundColor: Colors.greyLight,
+        paddingBottom: offsetTop
+    } as ViewStyle,
+    containerImg: {
+        height: windowHeight / 2,
+        position: "absolute",
+        width: windowWidth,
+        top: 0,
+        right: 0,
+        left: 0,
+        justifyContent: "flex-end",
+    } as ViewStyle,
     container: {
         flex: 1,
-        backgroundColor: Colors.greyLight
     } as ViewStyle,
     component: {
-        paddingTop: 15,
+        marginTop: 15,
     } as ViewStyle,
     backgroundImg: {
         position: "absolute",
-        top: -100,
+        top: 0,
         bottom: 0,
         left: 0,
         right: 0,
-        resizeMode: "stretch",
-        width: null as any,
-        height: null as any,
+        resizeMode: "cover",
+        width: windowWidth,
+        height: windowHeight / 2,
         marginBottom: 5,
         opacity: 0.6,
     } as ImageStyle,
     textContainer: {
-        marginTop: 260,
+        marginTop: 240,
         marginLeft: 20,
+        marginBottom: 20
     } as ViewStyle,
     name: {
         fontFamily: Fonts.lobster,
         fontSize: 30,
-        color: Colors.black
+        color: Colors.black,
+        marginBottom: 13,
+        marginLeft: 10,
     } as TextStyle,
     address: {
         fontFamily: Fonts.regular,
         fontSize: 18,
         color: Colors.black,
-        marginTop: 13,
+        marginBottom: 13,
+        marginLeft: 10,
     }as TextStyle
-
 });

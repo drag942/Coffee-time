@@ -4,7 +4,7 @@ import {NavigationAction, NavigationLeafRoute, NavigationScreenProp} from "react
 import {ICommonNavParams} from "../../navigation/actions";
 import {connectAdv} from "../../core/store";
 import {IAppState} from "../../core/store/appState";
-import {INavParam} from "../../common/helpers/getParamsFromProps";
+import {getParamsFromProps, INavParam} from "../../common/helpers/getParamsFromProps";
 import {Dispatch} from "redux";
 import {CoffeePageAsyncActions} from "./coffeePageAsyncActions";
 import {PlainHeader} from "../../common/components/Headers";
@@ -13,34 +13,40 @@ import {Image, ImageStyle, Text, TextStyle, TouchableOpacity, View, ViewStyle} f
 import {ImageSource} from "../../common/utils/ImageSource";
 import {Colors, CommonStyles, Fonts, windowHeight, windowWidth} from "../../core/theme";
 import {ImageResources} from "../../common/ImageResources.g";
-import {AtributeComponent} from "./components/atributeComponent";
+import {AttributeComponent} from "./components/attributeComponent";
 import {styleSheetCreate} from "../../common/utils";
 import {localization} from "../../common/localization/localization";
+import {LoadState} from "../../common/loadState";
 
 interface IStateProps {
     product: ProductFullInfo;
     error: string | null;
+    loadState: LoadState;
+    key: boolean;
 }
 
 interface IDispatchProps {
-    getProduct: () => void;
+    getProduct: (loadState: LoadState) => void;
     setFavorite: () => void;
     unsetFavorite: () => void;
 }
 
 interface IProps extends IReduxProps<IStateProps, IEmpty> {
     navigation?: NavigationScreenProp<NavigationLeafRoute<ICommonNavParams>, NavigationAction>;
+
 }
 
 @connectAdv(
-    ({coffeePage}: IAppState): IStateProps => ({
-        product: coffeePage.product,
+    ({coffeePage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps => ({
+        product: coffeePage.product.get(getParamsFromProps(ownProps).id)!,
         error: coffeePage.error,
+        loadState: coffeePage.loadState,
+        key: coffeePage.product.has(getParamsFromProps(ownProps).id),
     }),
     (dispatch: Dispatch, ownProps: INavParam<ICommonNavParams>): IDispatchProps =>  {
-        const id = ownProps.navigation.state.params!.id;
-        const getProd = (): void => {
-            dispatch(CoffeePageAsyncActions.getProduct(id));
+        const id = getParamsFromProps(ownProps).id;
+        const getProd = (loadState: LoadState): void => {
+            dispatch(CoffeePageAsyncActions.getProduct(loadState, id));
         };
 
        return ({
@@ -57,34 +63,36 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
 
 export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps, IProps> {
     static navigationOptions = PlainHeader( undefined, true);
+
     componentDidMount(): void {
-         this.dispatchProps.getProduct();
+        const {key} = this.stateProps;
+        this.dispatchProps.getProduct(key ? LoadState.allIsLoaded : LoadState.firstLoad);
     }
     render(): JSX.Element {
-         const {product} = this.stateProps;
+        const {product, key} = this.stateProps;
+        const favarite = key ? product.favarite : false;
 
-         return (
+        return (
            <View style={CommonStyles.flexWhiteBackground}>
-               <Image style={styles.coffeeImg} source={ImageSource.create(product.imagesPath)!}/>
+               <Image style={styles.coffeeImg} source={key ? ImageSource.create(product.imagesPath)! : ImageResources.image_eye}/>
                <View style={styles.nameContainer}>
-                   <Text style={styles.textName}>{product.productName}</Text>
-                   <TouchableOpacity onPress={product.favarite ? this.unsetFavorite : this.setFavorite}>
+                   <Text style={styles.textName}>{key ? product.productName : "Кофе"}</Text>
+                   <TouchableOpacity onPress={!favarite ? this.dispatchProps.setFavorite : this.dispatchProps.unsetFavorite}>
                        <Image
                            style={styles.heart}
-                           source={product.favarite ? ImageResources.icon_heart_active : ImageResources.icon_heart_gray}
+                           source={favarite ? ImageResources.icon_heart_active : ImageResources.icon_heart_gray}
                        />
                    </TouchableOpacity>
                </View>
-               <View style={styles.atributes}>
-                   <AtributeComponent imagePath={ImageResources.icon_milk} text={"15мл"}/>
-                   <AtributeComponent imagePath={ImageResources.icon_coffe} text={"25%"}/>
-                   <AtributeComponent imagePath={ImageResources.icon_water} text={"25мл"}/>
-                   <AtributeComponent imagePath={ImageResources.icon_temperature} text={"95'"}/>
-                   <AtributeComponent imagePath={ImageResources.icon_pressure} text={"15б"}/>
+               <View style={styles.attributes}>
+                   <AttributeComponent imagePath={ImageResources.icon_milk} text={"15мл"}/>
+                   <AttributeComponent imagePath={ImageResources.icon_coffe} text={"25%"}/>
+                   <AttributeComponent imagePath={ImageResources.icon_water} text={"25мл"}/>
+                   <AttributeComponent imagePath={ImageResources.icon_temperature} text={"95'"}/>
+                   <AttributeComponent imagePath={ImageResources.icon_pressure} text={"15б"}/>
                </View>
                <View style={styles.descriptionContainer}>
                    <Text style={styles.description}>
-                       {""/*TODO: in api i see description*/}
                        Lorem ipsum dolor sit amet,
                        consectetur adipiscing elit,
                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -93,7 +101,7 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
                </View>
                <View style={styles.priceContainer}>
                    <View style={styles.rubleContainer}>
-                       <Text style={styles.priceText}>{product.price}</Text>
+                       <Text style={styles.priceText}>{key ? product.price : 0}</Text>
                        <Image source={ImageResources.icon_ruble} style={styles.ruble}/>
                    </View>
                    <TouchableOpacity style={styles.buttonStyle} disabled={true}>
@@ -103,16 +111,10 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
            </View>
         );
     }
-    private setFavorite = (): void => {
-        this.dispatchProps.setFavorite();
-    };
-    private unsetFavorite = (): void => {
-        this.dispatchProps.unsetFavorite();
-}
 }
 
 const styles = styleSheetCreate({
-    atributes: {
+    attributes: {
         flexDirection: "row",
         marginVertical: 20,
         marginLeft: 10,

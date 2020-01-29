@@ -8,7 +8,7 @@ interface IProps {
     text: string;
 }
 
-export class AtributeComponent extends PureComponent<IProps> {
+export class AttributeComponent extends PureComponent<IProps> {
     render(): JSX.Element {
         const {imagePath, text} = this.props;
 
