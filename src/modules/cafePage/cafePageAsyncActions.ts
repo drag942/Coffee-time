@@ -6,6 +6,10 @@ import {CafePageActions, ICafePageParams} from "./cafePageActions";
 import {IAppState} from "../../core/store/appState";
 import {LoadState} from "../../common/loadState";
 
+/*
+TODO: Можно было описать также как указано в курсах, потенциально эти запросы нужно использовать в других файлах,
+      тогда придётся там также создавать константу
+*/
 const productClientRequest = new ProductClientRequest();
 
 export class CafePageAsyncActions {
@@ -19,6 +23,8 @@ export class CafePageAsyncActions {
             try {
                 dispatch(CafePageActions.getProducts.started(params));
                 const sessionId =  getState().system.authToken;
+
+                //TODO: Зачем это также здесь?
                 const cafeRequest = new CafeRequest({cafeId, sessionId});
 
                 const result = await productClientRequest.getProductsCafe(cafeRequest);

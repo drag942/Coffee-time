@@ -33,12 +33,19 @@ interface IDispatchProps {
     navigateToCoffeePage: (id: string) => void;
 }
 
+//TODO: Почему полностью не заполнить IReduxProps?
 interface IProps extends IReduxProps<IStateProps, IEmpty> {
     navigation?: NavigationScreenProp<NavigationLeafRoute<ICommonNavParams>, NavigationAction>;
 }
 
 const offsetTop = windowHeight / 2 - 6;
 
+/*
+TODO: Это компонент, соответсвенно файл должен начинаться в верхем регистре
+
+TODO: Получение ID можно было вынести отдельно и один раз можно было бы получить продукт,
+      так получается минимум 2 раза один и тот же проход
+*/
 @connectAdv(
     ({mainPage, cafePage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps => ({
         cafe: mainPage.cafes.find(item => item.id == getParamsFromProps(ownProps).id)!,
@@ -62,6 +69,7 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
 
     componentDidMount(): void {
         const {key} = this.stateProps;
+        //TODO: allIsLoaded используется когда мы находимся в списке и больше не можем ничего загрузить, т.к. это конечные данные
         this.dispatchProps.getProducts(key  ? LoadState.allIsLoaded : LoadState.firstLoad );
     }
 
@@ -81,8 +89,8 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
                 </View>
                 <FlatListWrapper
                     contentContainerStyle={styles.containerFlatList}
-                    data={products != undefined ? products : []}
-                    loadState={key ? LoadState.allIsLoaded : LoadState.firstLoad}
+                    data={products != undefined ? products : []} //TODO: products не могут быть undefined
+                    loadState={key ? LoadState.allIsLoaded : LoadState.firstLoad} //TODO: Почему нельзя передавать весь loadState?
                     keyExtractor={defaultIdExtractor}
                     errorText={error}
                     EmptyComponent={this.renderEmptyComponent}
@@ -105,7 +113,7 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
 
     private renderEmptyComponent = (): JSX.Element => {
         return (
-            <EmptyComponent title={"Список пуст"}/>
+            <EmptyComponent title={"Список пуст"}/> //TODO: Должно быть вынесено в константу
         );
     };
 

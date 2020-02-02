@@ -27,6 +27,7 @@ function setNotificationInfoHandler(state: ISystemState, notificationInfo: INoti
     return newState(state, {notificationInfo});
 }
 
+//TODO: Login непонятно почему обрабатывается двумя функциями одновременно
 export const systemReducer = reducerWithInitialState(SystemInitialState)
     .case(CoreActions.rehydrate, rehydrateHandler)
     .case(AuthActions.login.done, loginDoneHandler)

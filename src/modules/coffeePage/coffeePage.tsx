@@ -45,6 +45,8 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
     }),
     (dispatch: Dispatch, ownProps: INavParam<ICommonNavParams>): IDispatchProps =>  {
         const id = getParamsFromProps(ownProps).id;
+
+        //TODO: Зачем это выносить?
         const getProd = (loadState: LoadState): void => {
             dispatch(CoffeePageAsyncActions.getProduct(loadState, id));
         };
@@ -61,6 +63,8 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
     }
 )
 
+//TODO: Текст должен быть вынесен в константы
+//TODO: Почему мы можем работать с продуктом, если его у нас нет?
 export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps, IProps> {
     static navigationOptions = PlainHeader( undefined, true);
 
@@ -69,6 +73,7 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
         this.dispatchProps.getProduct(key ? LoadState.allIsLoaded : LoadState.firstLoad);
     }
     render(): JSX.Element {
+        //TODO: Зачем вообще здесь нужен ключ? Для чего такие проверки? Почему мы не можем работать с продуктом напрямую?
         const {product, key} = this.stateProps;
         const favarite = key ? product.favarite : false;
 
@@ -84,7 +89,7 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
                        />
                    </TouchableOpacity>
                </View>
-               <View style={styles.attributes}>
+               <View style={styles.attributes}> //TODO: Аттрибуты должны заполнятся из продукта, потенциально их может быть больше
                    <AttributeComponent imagePath={ImageResources.icon_milk} text={"15мл"}/>
                    <AttributeComponent imagePath={ImageResources.icon_coffe} text={"25%"}/>
                    <AttributeComponent imagePath={ImageResources.icon_water} text={"25мл"}/>

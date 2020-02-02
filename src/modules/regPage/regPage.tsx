@@ -96,6 +96,7 @@ export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, ISt
         );
     }
 
+    //TODO: Все эти проверки не должны здесь происходить
     private onLoginTextChange = (email: string): void => {
         this.email = email;
         if ( this.email == "" || this.password == "" || this.confrimPassword == "") {

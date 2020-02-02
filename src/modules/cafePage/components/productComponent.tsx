@@ -16,6 +16,7 @@ interface IProps {
     onPress?: (id: string) => void;
 }
 
+//TODO: Это компонент, соответсвенно файл должен начинаться в верхем регистре
 export class ProductComponent extends PureComponent<IProps> {
     render(): JSX.Element {
         const {name, price, favorite, imagesPath, onPress} = this.props;
@@ -37,6 +38,7 @@ export class ProductComponent extends PureComponent<IProps> {
         );
     }
     private onPress = (): void => {
+        //TODO: Почему после id идёт ! если в типе строго указана строка?
         this.props.onPress!(this.props.id!);
     }
 }

@@ -22,6 +22,7 @@ export class AuthAsyncActions {
                     AuthHelper2.checkPassword(params.password);
                 }
 
+                //TODO: Мы должны падать, показывать ошибку пользователю что-то пошло не так, если нам вернулся null
                 const token =  await Auth.getSessionId(params.login, params.password) || "NullToken";
 
                 dispatch(AuthActions.login.done({params, result: token}));

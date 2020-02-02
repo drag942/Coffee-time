@@ -109,6 +109,7 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
         this.setState({tabs: {...this.state.tabs, index}});
     };
 
+    //TODO: Форматирование
     private renderScene = ({route}: { route: IRoute }):
         JSX.Element | null => {
         switch (route.key) {
@@ -131,7 +132,7 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
                 tryAgain={this.tryAgain}
                 onRefresh={this.tryAgain}
                 loadMore={this.tryAgain}
-                style={{opacity: 0}as ViewStyle}
+                style={{opacity: 0}as ViewStyle} //TODO: Должно быть вынесено
            />
        );
     };
@@ -148,6 +149,8 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
 
     };
 
+    //TODO: Форматирование
+    //TODO: Почему нельзя заранее сформировать маркеры и в принципе координаты?
     private renderMapComponent = (): JSX.Element => {
        const markers = this.stateProps.cafes.map(element => {
                const coordinate = {latitude: 0, longitude: 0};
@@ -192,6 +195,7 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
       };
 
     private requestLocationPermission = async (): Promise<void> => {
+        //TODO: Для этого должен быть создан отдельный файл который должен проверять налачие доступов
         const response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
         console.log("Android: " + response);
         if (response === "granted") {
@@ -199,6 +203,7 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
         }
     };
 
+    //TODO: followsUserLocation + showsUserLocation + showsMyLocationButton, и будет наведение на точку пользователя и её отображение
     private locateCurrentPosition = (): void => {
         Geolocation.getCurrentPosition(position => {
             console.log(position);

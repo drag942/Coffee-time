@@ -13,6 +13,7 @@ interface IProps {
     onPress?: (id: string) => void;
 }
 
+//TODO: Компонент может работать даже если в ID приёдет undefined? Почему вообще может быть undefined?
 export class CarouselComponent extends PureComponent<IProps> {
     render(): JSX.Element {
         const {title, imageSource, onPress} = this.props;

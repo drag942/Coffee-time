@@ -1,5 +1,7 @@
 import {localization} from "../localization/localization";
 
+//TODO: Зачем создавать второй файл, если уже есть существующий?
+//TODO: Этот файл не является компонентом, соответственно должен начианться в нижнем регистре
 export class AuthHelper2 {
 
     static checkEmail(email: string): void {
