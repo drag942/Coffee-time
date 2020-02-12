@@ -94,7 +94,6 @@ export class App extends PureComponent<IEmpty, IState> {
     private onStoreConfigured(): void {
         if (__DEV__) {
             DevMenu.addItem(
-                //TODO: Why ? Playground use for started design and see all components
                 "Navigate to InDevelopment",
                 () => this.store.dispatch(NavigationActions.navigateToInDevelopment())
             );
