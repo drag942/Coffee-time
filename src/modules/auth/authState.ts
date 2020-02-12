@@ -1,10 +1,10 @@
-//TODO: Почему опять 2?
-export interface IAuthState2 {
+
+export interface IAuthState {
     isAuthorizing: boolean;
     error: string | null;
 }
 
-export const AuthInitialState2: IAuthState2 = {
+export const AuthInitialState: IAuthState = {
     isAuthorizing: false,
     error: null,
 };

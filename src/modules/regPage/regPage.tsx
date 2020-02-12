@@ -20,11 +20,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-    registration: (login: string, password: string) => void;
-}
-
-interface IState {
-    isDisabled: boolean;
+    registration: (login: string, password: string, confrimPassword: string) => void;
 }
 
 @connectAdv(
@@ -33,12 +29,12 @@ interface IState {
         error: regPage.error || ""
     }),
     (dispatch: Dispatch): IDispatchProps => ({
-        registration: (email: string, password: string): void => {
-            dispatch(RegPageAsyncActions.registration(email, password));
+        registration: (email: string, password: string, confrimPassword: string): void => {
+            dispatch(RegPageAsyncActions.registration(email, password, confrimPassword));
         },
     }),
 )
-export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, IState> {
+export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps> {
     static navigationOptions = PlainHeader(undefined, true);
     private email: string = "";
     private password: string = "";
@@ -46,12 +42,10 @@ export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, ISt
 
     constructor(props: IEmpty) {
         super(props);
-        this.state = {isDisabled: true};
     }
 
     render(): JSX.Element {
         const isReg = this.stateProps.isReg;
-        const isDisabled = this.state.isDisabled || isReg;
 
         return(
             <TouchableOpacity style={CommonStyles.flex1} onPress={Keyboard.dismiss} activeOpacity={1}>
@@ -84,8 +78,8 @@ export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, ISt
                         />
                         <View style={styles.separator}/>
                         <MainButton
-                            buttonType={isDisabled ? ButtonType.disabled : ButtonType.positive}
-                            disabled={isDisabled}
+                            buttonType={isReg ? ButtonType.disabled : ButtonType.positive}
+                            disabled={isReg}
                             title={localization.auth.registation}
                             onPress={this.onRegPress}
                         />
@@ -96,52 +90,20 @@ export class RegPage extends BaseReduxComponent<IStateProps, IDispatchProps, ISt
         );
     }
 
-    //TODO: Все эти проверки не должны здесь происходить
     private onLoginTextChange = (email: string): void => {
         this.email = email;
-        if ( this.email == "" || this.password == "" || this.confrimPassword == "") {
-            if (!this.state.isDisabled) {
-                this.setState({isDisabled: true});
-            }
-        } else {
-            if (this.state.isDisabled) {
-                this.setState({isDisabled: false});
-            }
-        }
     };
 
     private onPasswordTextChange = (password: string): void => {
         this.password = password;
-        if (this.email == "" || this.password == "" || this.confrimPassword == "") {
-            if (!this.state.isDisabled) {
-                this.setState({isDisabled: true});
-            }
-        } else {
-            if (this.state.isDisabled) {
-                this.setState({isDisabled: false});
-            }
-        }
     };
 
     private onConfirmPasswordTextChange = (confirmPassword: string): void => {
         this.confrimPassword = confirmPassword;
-        if (this.email == "" || this.password == "" || this.confrimPassword == "") {
-            if (!this.state.isDisabled) {
-                this.setState({isDisabled: true});
-            }
-        } else {
-            if (this.state.isDisabled) {
-                this.setState({isDisabled: false});
-            }
-        }
     };
 
     private onRegPress = (): void => {
-        if (this.password == this.confrimPassword) {
-            this.dispatchProps.registration(this.email, this.password);
-        } else {
-            alert("Пароли не совпадают");
-        }
+        this.dispatchProps.registration(this.email, this.password, this.confrimPassword);
     };
 }
 

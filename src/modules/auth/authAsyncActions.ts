@@ -1,29 +1,33 @@
 import {SimpleThunk} from "../../common/simpleThunk";
 import {Dispatch} from "redux";
 import {AuthActions} from "./authActions";
-import {IAuth2Params} from "../../types/interfaces";
+import {IAuthParams} from "../../types/interfaces";
 
-import {AuthHelper2} from "../../common/helpers/AuthHelper2";
+import {AuthHelper} from "../../common/helpers/authHelper";
 import {Auth} from "../../core/api/Auth";
 import {appSettingsProvider} from "../../core/settings";
+import {localization} from "../../common/localization/localization";
 
 export class AuthAsyncActions {
     static login(login: string, password: string): SimpleThunk {
         return async function(dispatch: Dispatch): Promise<void> {
-            const params: IAuth2Params = {
+            const params: IAuthParams = {
                 login,
-                password
+                password,
             };
 
             try {
                 dispatch(AuthActions.login.started(params));
                 if (appSettingsProvider.settings.environment != "Development") {
-                    AuthHelper2.checkEmail(params.login);
-                    AuthHelper2.checkPassword(params.password);
+                    AuthHelper.checkEmail(params.login);
+                    AuthHelper.checkPassword(params.password);
                 }
-
-                //TODO: Мы должны падать, показывать ошибку пользователю что-то пошло не так, если нам вернулся null
                 const token =  await Auth.getSessionId(params.login, params.password) || "NullToken";
+                console.log(token);
+                if (token == "NullToken") {
+                    throw new Error(localization.errors.loginError);
+                    alert(localization.errors.loginError);
+                }
 
                 dispatch(AuthActions.login.done({params, result: token}));
             } catch (error) {

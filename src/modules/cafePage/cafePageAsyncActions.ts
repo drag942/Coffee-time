@@ -2,9 +2,10 @@ import {SimpleThunk} from "../../common/simpleThunk";
 import {Dispatch} from "redux";
 import {showToast} from "../../common/showToast";
 import {CafeRequest, ProductClientRequest} from "../../core/api/CoffeeRequest";
-import {CafePageActions, ICafePageParams} from "./cafePageActions";
+import {CafePageActions} from "./cafePageActions";
 import {IAppState} from "../../core/store/appState";
 import {LoadState} from "../../common/loadState";
+import {ICafePageParams} from "../../types/interfaces";
 
 /*
 TODO: Можно было описать также как указано в курсах, потенциально эти запросы нужно использовать в других файлах,

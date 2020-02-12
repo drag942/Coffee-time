@@ -220,7 +220,7 @@ export interface ICafeInfo {
 }
 
 export class CafeRequest implements ICafeRequest {
-    sessionId: string | null;
+    sessionId: string;
     cafeId: string;
 
     constructor(data?: ICafeRequest) {

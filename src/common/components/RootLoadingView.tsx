@@ -9,7 +9,7 @@ interface IStateProps {
 }
 
 @connectAdv((state: IAppState): IStateProps => ({
-    isLoading: state.auth2.isAuthorizing
+    isLoading: state.auth.isAuthorizing
 }))
 export class RootLoadingView extends BaseReduxComponent<IStateProps, IEmpty> {
     render(): JSX.Element {

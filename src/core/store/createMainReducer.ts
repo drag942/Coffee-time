@@ -15,7 +15,7 @@ export function createMainReducer(): any {
     const reducers: Reducers<IAppState> = {
         navigation: combineReducers(navigationReducers),
         system: systemReducer,
-        auth2: authReducer,
+        auth: authReducer,
         mainPage: mainPageReducer,
         cafePage: cafePageReducer,
         coffeePage: coffeePageReducer,

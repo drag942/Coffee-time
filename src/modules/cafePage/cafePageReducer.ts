@@ -5,9 +5,10 @@ import {Failure, Success} from "typescript-fsa";
 import {LoadState} from "../../common/loadState";
 import {ProductBriefInfo} from "../../core/api/CoffeeRequest";
 import {CafeInitialState, ICafePageState} from "./cafePageState";
-import {CafePageActions, ICafePageParams} from "./cafePageActions";
+import {CafePageActions} from "./cafePageActions";
 import {IAppState} from "../../core/store/appState";
 import {CoreActions} from "../../core/store";
+import {ICafePageParams} from "../../types/interfaces";
 
 function getProductsStartedHandler(state: ICafePageState): ICafePageState {
     return newState(state, {loadState: LoadState.firstLoad, error: null});
@@ -15,11 +16,12 @@ function getProductsStartedHandler(state: ICafePageState): ICafePageState {
 
 function getProductsDoneHandler(state: ICafePageState, {params, result}: Success<ICafePageParams, ProductBriefInfo[]>): ICafePageState {
     const products =  state.products;
+    const loadState = params.loadState;
     switch (params.loadState) {
         case LoadState.firstLoad:
             products.set(params.id, result);
             break;
-        case LoadState.allIsLoaded:
+        case LoadState.idle:
         case LoadState.pullToRefresh:
             products.set(params.id, result);
             break;
@@ -27,7 +29,7 @@ function getProductsDoneHandler(state: ICafePageState, {params, result}: Success
             throw new Error(`LoadState ${params.loadState} is not valid in this context.`);
     }
 
-    return newState(state, {loadState: LoadState.allIsLoaded, products});
+    return newState(state, {loadState, products});
 }
 
 function getProductsFailedHandler(state: ICafePageState, failed: Failure<ICafePageParams, Error>): ICafePageState {

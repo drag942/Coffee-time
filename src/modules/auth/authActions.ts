@@ -1,6 +1,6 @@
 import {actionCreator} from "../../core/store";
-import {IAuth2Params} from "../../types/interfaces";
+import {IAuthParams} from "../../types/interfaces";
 
 export class AuthActions {
-    static login = actionCreator.async<IAuth2Params, string, Error>("Auth/LOGIN");
+    static login = actionCreator.async<IAuthParams, string, Error>("Auth/LOGIN");
 }

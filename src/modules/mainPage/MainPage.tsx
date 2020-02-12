@@ -11,7 +11,7 @@ import {defaultIdExtractor} from "../../common/helpers";
 import {CafeInfo} from "../../core/api/CoffeeRequest";
 import {MainPageAsyncActions} from "./mainPageAsyncActions";
 import {BaseReduxComponent} from "../../core/BaseComponent";
-import {MainPageComponent} from "./components/mainPageComponent";
+import {MainPageComponent} from "./components/MainPageComponent";
 import {PlainHeader} from "../../common/components/Headers";
 import {NavigationActions} from "../../navigation/navigation";
 import {NavigationState, TabView} from "react-native-tab-view";
@@ -22,7 +22,7 @@ import {EmptyComponent} from "../../common/components/EmptyComponent";
 import Geolocation from "@react-native-community/geolocation";
 import {PERMISSIONS, request} from "react-native-permissions";
 import Carousel, {CarouselStatic} from "react-native-snap-carousel";
-import {CarouselComponent} from "./components/carouselComponent";
+import {CarouselComponent} from "./components/CarouselComponent";
 
 interface IStateProps {
     cafes: CafeInfo[];
@@ -102,14 +102,15 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
             </View>
         );
     }
+
     private tryAgain = (): void => {
         this.dispatchProps.getCafes();
     };
+
     private handleIndexChange = (index: number): void => {
         this.setState({tabs: {...this.state.tabs, index}});
     };
 
-    //TODO: Форматирование
     private renderScene = ({route}: { route: IRoute }):
         JSX.Element | null => {
         switch (route.key) {
@@ -119,8 +120,11 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
                 return this.renderMapComponent();
             default:
                 return null;
-        }    };
+        }
+    };
+
     private renderList = (): JSX.Element => {
+
        return (
            <FlatListWrapper
                 data={this.stateProps.cafes}
@@ -132,14 +136,15 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
                 tryAgain={this.tryAgain}
                 onRefresh={this.tryAgain}
                 loadMore={this.tryAgain}
-                style={{opacity: 0}as ViewStyle} //TODO: Должно быть вынесено
+                style={styles.flatList}
            />
        );
     };
+
     private renderPost = ({item}: {item: CafeInfo}): JSX.Element => {
         return (
             <MainPageComponent
-                id={item.id}
+                id={item.id || ""}
                 title={item.name}
                 address={item.address}
                 imageSource={item.images}
@@ -149,8 +154,8 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
 
     };
 
-    //TODO: Форматирование
     //TODO: Почему нельзя заранее сформировать маркеры и в принципе координаты?
+    //TODO Координаты в API пришли в виде string, пришлось переводить их в объект для либы
     private renderMapComponent = (): JSX.Element => {
        const markers = this.stateProps.cafes.map(element => {
                const coordinate = {latitude: 0, longitude: 0};
@@ -176,6 +181,8 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
                     initialRegion={initialPosition}
                     showsUserLocation={true}
                     ref={this.mapRef.handler}
+                    showsMyLocationButton={true}
+                    followsUserLocation={true}
                 >
                     {markers}
                 </MapView>
@@ -203,7 +210,6 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
         }
     };
 
-    //TODO: followsUserLocation + showsUserLocation + showsMyLocationButton, и будет наведение на точку пользователя и её отображение
     private locateCurrentPosition = (): void => {
         Geolocation.getCurrentPosition(position => {
             console.log(position);
@@ -226,7 +232,7 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
 
     private renderCarouselItem = ({item}: {item: CafeInfo}): JSX.Element => (
         <CarouselComponent
-            id={item.id}
+            id={item.id || ""}
             title={item.name}
             address={item.address}
             imageSource={item.images}
@@ -299,4 +305,7 @@ const styles = styleSheetCreate({
         width: windowWidth - 50,
         height: 150,
     }as ImageStyle,
+    flatList: {
+        opacity: 0,
+    }as ViewStyle
 });

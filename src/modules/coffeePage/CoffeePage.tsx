@@ -1,4 +1,4 @@
-import {ProductFullInfo} from "../../core/api/CoffeeRequest";
+import {AttributeInfo, ProductFullInfo} from "../../core/api/CoffeeRequest";
 import {BaseReduxComponent, IReduxProps} from "../../core/BaseComponent";
 import {NavigationAction, NavigationLeafRoute, NavigationScreenProp} from "react-navigation";
 import {ICommonNavParams} from "../../navigation/actions";
@@ -9,7 +9,7 @@ import {Dispatch} from "redux";
 import {CoffeePageAsyncActions} from "./coffeePageAsyncActions";
 import {PlainHeader} from "../../common/components/Headers";
 import React from "react";
-import {Image, ImageStyle, Text, TextStyle, TouchableOpacity, View, ViewStyle} from "react-native";
+import {FlatList, Image, ImageStyle, Text, TextStyle, TouchableOpacity, View, ViewStyle} from "react-native";
 import {ImageSource} from "../../common/utils/ImageSource";
 import {Colors, CommonStyles, Fonts, windowHeight, windowWidth} from "../../core/theme";
 import {ImageResources} from "../../common/ImageResources.g";
@@ -17,12 +17,14 @@ import {AttributeComponent} from "./components/attributeComponent";
 import {styleSheetCreate} from "../../common/utils";
 import {localization} from "../../common/localization/localization";
 import {LoadState} from "../../common/loadState";
+import {LoadingView} from "../../common/components/LoadingView";
 
 interface IStateProps {
     product: ProductFullInfo;
     error: string | null;
     loadState: LoadState;
     key: boolean;
+    attributes: AttributeInfo[];
 }
 
 interface IDispatchProps {
@@ -31,22 +33,28 @@ interface IDispatchProps {
     unsetFavorite: () => void;
 }
 
-interface IProps extends IReduxProps<IStateProps, IEmpty> {
+interface IProps extends IReduxProps<IStateProps, IDispatchProps> {
     navigation?: NavigationScreenProp<NavigationLeafRoute<ICommonNavParams>, NavigationAction>;
 
 }
 
 @connectAdv(
-    ({coffeePage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps => ({
-        product: coffeePage.product.get(getParamsFromProps(ownProps).id)!,
+    ({coffeePage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps =>  {
+        const id = getParamsFromProps(ownProps).id;
+
+        return ({
+        product: coffeePage.product.get(id)!,
         error: coffeePage.error,
         loadState: coffeePage.loadState,
-        key: coffeePage.product.has(getParamsFromProps(ownProps).id),
-    }),
+        key: coffeePage.product.has(id),
+        attributes: coffeePage.product.get(id)!.attribute
+    });
+    },
     (dispatch: Dispatch, ownProps: INavParam<ICommonNavParams>): IDispatchProps =>  {
         const id = getParamsFromProps(ownProps).id;
 
         //TODO: Зачем это выносить?
+        //TODO: уменьшает кол-во кода
         const getProd = (loadState: LoadState): void => {
             dispatch(CoffeePageAsyncActions.getProduct(loadState, id));
         };
@@ -63,8 +71,6 @@ interface IProps extends IReduxProps<IStateProps, IEmpty> {
     }
 )
 
-//TODO: Текст должен быть вынесен в константы
-//TODO: Почему мы можем работать с продуктом, если его у нас нет?
 export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps, IProps> {
     static navigationOptions = PlainHeader( undefined, true);
 
@@ -74,53 +80,54 @@ export class CoffeePage  extends BaseReduxComponent<IStateProps, IDispatchProps,
     }
     render(): JSX.Element {
         //TODO: Зачем вообще здесь нужен ключ? Для чего такие проверки? Почему мы не можем работать с продуктом напрямую?
+        //TODO ключ нужен для проверки наличия продукта в кешированой MAP в случае отсутсвия интернета
         const {product, key} = this.stateProps;
-        const favarite = key ? product.favarite : false;
 
         return (
-           <View style={CommonStyles.flexWhiteBackground}>
-               <Image style={styles.coffeeImg} source={key ? ImageSource.create(product.imagesPath)! : ImageResources.image_eye}/>
+        key ?
+            <View style={CommonStyles.flexWhiteBackground}>
+               <Image style={styles.coffeeImg} source={ImageSource.create(product.imagesPath)!}/>
                <View style={styles.nameContainer}>
-                   <Text style={styles.textName}>{key ? product.productName : "Кофе"}</Text>
-                   <TouchableOpacity onPress={!favarite ? this.dispatchProps.setFavorite : this.dispatchProps.unsetFavorite}>
+                   <Text style={styles.textName}>{product.productName}</Text>
+                   <TouchableOpacity onPress={!product.favarite ? this.dispatchProps.setFavorite : this.dispatchProps.unsetFavorite}>
                        <Image
                            style={styles.heart}
-                           source={favarite ? ImageResources.icon_heart_active : ImageResources.icon_heart_gray}
+                           source={product.favarite ? ImageResources.icon_heart_active : ImageResources.icon_heart_gray}
                        />
                    </TouchableOpacity>
                </View>
-               <View style={styles.attributes}> //TODO: Аттрибуты должны заполнятся из продукта, потенциально их может быть больше
-                   <AttributeComponent imagePath={ImageResources.icon_milk} text={"15мл"}/>
-                   <AttributeComponent imagePath={ImageResources.icon_coffe} text={"25%"}/>
-                   <AttributeComponent imagePath={ImageResources.icon_water} text={"25мл"}/>
-                   <AttributeComponent imagePath={ImageResources.icon_temperature} text={"95'"}/>
-                   <AttributeComponent imagePath={ImageResources.icon_pressure} text={"15б"}/>
+               <View style={styles.attributes}>
+                   <FlatList data={this.stateProps.attributes} renderItem={this.renderItem} horizontal={true}/>
                </View>
                <View style={styles.descriptionContainer}>
                    <Text style={styles.description}>
-                       Lorem ipsum dolor sit amet,
-                       consectetur adipiscing elit,
-                       sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                       At tellus at urna condimentum mattis pellentesque id nibh.
+                       {localization.pages.testText}
                    </Text>
                </View>
                <View style={styles.priceContainer}>
                    <View style={styles.rubleContainer}>
-                       <Text style={styles.priceText}>{key ? product.price : 0}</Text>
+                       <Text style={styles.priceText}>{product.price}</Text>
                        <Image source={ImageResources.icon_ruble} style={styles.ruble}/>
                    </View>
                    <TouchableOpacity style={styles.buttonStyle} disabled={true}>
                        <Text style={styles.order}>{localization.pages.order}</Text>
                    </TouchableOpacity>
                </View>
-           </View>
+            </View>
+            :
+           <LoadingView/>
         );
     }
+
+    private renderItem = ({item}: {item: AttributeInfo }): JSX.Element => {
+        return (
+            <AttributeComponent imagePath={item.iconType as IconType} text={item.description}/>
+        );
+    };
 }
 
 const styles = styleSheetCreate({
     attributes: {
-        flexDirection: "row",
         marginVertical: 20,
         marginLeft: 10,
     }as ViewStyle,

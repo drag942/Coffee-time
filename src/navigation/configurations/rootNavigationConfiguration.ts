@@ -13,9 +13,9 @@ import {extendWithDontPushTwoPageInStack} from "../extendWithDontPushTwoPageInSt
 import {NavigationPages} from "../navigation";
 import {AuthPage} from "../../modules/auth/AuthPage";
 import {AuthActions} from "../../modules/auth/authActions";
-import {MainPage} from "../../modules/mainPage/mainPage";
-import {CafePage} from "../../modules/cafePage/cafePage";
-import {CoffeePage} from "../../modules/coffeePage/coffeePage";
+import {MainPage} from "../../modules/mainPage/MainPage";
+import {CafePage} from "../../modules/cafePage/CafePage";
+import {CoffeePage} from "../../modules/coffeePage/CoffeePage";
 import {RegPage} from "../../modules/regPage/regPage";
 import {RegPageActions} from "../../modules/regPage/regPageActions";
 

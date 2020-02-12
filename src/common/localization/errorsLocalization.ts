@@ -7,6 +7,7 @@ export const errorsLocalization = {
         "invalidPassword": "Пароль должен содержать минимум 6 символов",
         "loginError": "Неверный логин или пароль",
         "notFound": "Элемент не найден",
+        "regConfrimPassError": "Пароли не совпадают",
 
         "noInternetConnection": "Нет соединения с Интернетом",
         "noPhoto": "Сфотографируйте ТТН",

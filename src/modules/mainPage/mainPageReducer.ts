@@ -2,7 +2,7 @@ import {reducerWithInitialState} from "typescript-fsa-reducers";
 
 import {newState} from "../../common/newState";
 import {Failure, Success} from "typescript-fsa";
-import {IAuth2Params} from "../../types/interfaces";
+import {IAuthParams} from "../../types/interfaces";
 import {LoadState} from "../../common/loadState";
 import {IMainPageState, MainPageInitialState} from "./mainPageState";
 import {MainPageActions} from "./mainPageActions";
@@ -19,7 +19,7 @@ function getCafesDoneHandler(state: IMainPageState, {result}: Success<IEmpty, Ca
     return newState(state, {loadState: LoadState.allIsLoaded, error: null, cafes: result});
 }
 
-function getCafesFailedHandler(state: IMainPageState, failed: Failure<IAuth2Params, Error>): IMainPageState {
+function getCafesFailedHandler(state: IMainPageState, failed: Failure<IAuthParams, Error>): IMainPageState {
     return newState(state, {loadState: LoadState.error, error: failed.error.message});
 }
 

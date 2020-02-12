@@ -54,16 +54,15 @@ interface IDispatchProps {
 }
 
  interface IState {
-     isDisabled: boolean;
      isActive: boolean;
      buttonOpacity: any;
  }
  const AnimatedTouch = createAnimatedComponent(TouchableOpacity);
 
 @connectAdv(
-    ({auth2}: IAppState): IStateProps => ({
-        isAuthorizing: auth2.isAuthorizing,
-        error: auth2.error || ""
+    ({auth}: IAppState): IStateProps => ({
+        isAuthorizing: auth.isAuthorizing,
+        error: auth.error || ""
     }),
     (dispatch: Dispatch): IDispatchProps => ({
         login: (login: string, password: string): void => {
@@ -86,19 +85,18 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
 
     constructor(props: IEmpty) {
         super(props);
-        this.state = {isDisabled: true, isActive: false, buttonOpacity: new Value(1)};
+        this.state = {isActive: false, buttonOpacity: new Value(1)};
 
         this.buttonY = new Value(0);
         this.formOpacity = new Value(0);
         this.bgY = new Value(0);
         this.rotateCross = new Value(180);
         this.flagName = new Value(0);
-
     }
 
     render(): JSX.Element {
         const isAuthorizing = this.stateProps.isAuthorizing;
-        const isDisabled = this.state.isDisabled || isAuthorizing || !this.state.isActive;
+        const isDisabled = isAuthorizing || !this.state.isActive;
 
         return(
             <TouchableOpacity style={CommonStyles.flex1} onPress={Keyboard.dismiss} activeOpacity={1}>
@@ -178,28 +176,10 @@ export class AuthPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
 
     private onLoginTextChange = (login: string): void => {
         this.login = login;
-        if ( this.login == "" || this.password == "" ) {
-            if (!this.state.isDisabled) {
-                this.setState({isDisabled: true});
-            }
-        } else {
-            if (this.state.isDisabled) {
-                this.setState({isDisabled: false});
-            }
-        }
     };
 
     private onPasswordTextChange = (password: string): void => {
         this.password = password;
-        if (this.login == "" || this.password == "") {
-            if (!this.state.isDisabled) {
-                this.setState({isDisabled: true});
-            }
-        } else {
-            if (this.state.isDisabled) {
-                this.setState({isDisabled: false});
-            }
-        }
     };
 
     private onRegPress = (): void => {
@@ -305,7 +285,6 @@ const styles = styleSheetCreate({
         color: Colors.browny,
         fontSize: 16,
         textDecorationLine: "underline",
-
     } as TextStyle,
     signText: {
         color: Colors.black,
@@ -333,6 +312,5 @@ const styles = styleSheetCreate({
         position: "absolute",
         top: -10,
         left: windowWidth / 2 + 120,
-
     }as ViewStyle
 });

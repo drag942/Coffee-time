@@ -17,8 +17,9 @@ import {Dispatch} from "redux";
 import {CafePageAsyncActions} from "./cafePageAsyncActions";
 import {EmptyComponent} from "../../common/components/EmptyComponent";
 import {defaultIdExtractor} from "../../common/helpers";
-import {ProductComponent} from "./components/productComponent";
+import {ProductComponent} from "./components/ProductComponent";
 import {NavigationActions} from "../../navigation/navigation";
+import {localization} from "../../common/localization/localization";
 
 interface IStateProps {
     cafe: CafeInfo;
@@ -33,27 +34,28 @@ interface IDispatchProps {
     navigateToCoffeePage: (id: string) => void;
 }
 
-//TODO: Почему полностью не заполнить IReduxProps?
-interface IProps extends IReduxProps<IStateProps, IEmpty> {
+interface IProps extends IReduxProps<IStateProps, IDispatchProps> {
     navigation?: NavigationScreenProp<NavigationLeafRoute<ICommonNavParams>, NavigationAction>;
 }
 
 const offsetTop = windowHeight / 2 - 6;
 
 /*
-TODO: Это компонент, соответсвенно файл должен начинаться в верхем регистре
-
 TODO: Получение ID можно было вынести отдельно и один раз можно было бы получить продукт,
       так получается минимум 2 раза один и тот же проход
 */
 @connectAdv(
-    ({mainPage, cafePage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps => ({
-        cafe: mainPage.cafes.find(item => item.id == getParamsFromProps(ownProps).id)!,
-        products: cafePage.products.get(getParamsFromProps(ownProps).id)!,
+    ({mainPage, cafePage}: IAppState, ownProps: INavParam<ICommonNavParams>): IStateProps => {
+        const id = getParamsFromProps(ownProps).id;
+
+        return({
+        cafe: mainPage.cafes.find(item => item.id == id)!,
+        products: cafePage.products.get(id)!,
         loadState: cafePage.loadState,
         error: cafePage.error,
-        key: cafePage.products.has(getParamsFromProps(ownProps).id),
-    }),
+        key: cafePage.products.has(id),
+    });
+    },
     (dispatch: Dispatch, ownProps: INavParam<ICommonNavParams>): IDispatchProps => ({
         getProducts: (loadState: LoadState): void => {
             dispatch(CafePageAsyncActions.getProducts(loadState, getParamsFromProps(ownProps).id));
@@ -69,13 +71,12 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
 
     componentDidMount(): void {
         const {key} = this.stateProps;
-        //TODO: allIsLoaded используется когда мы находимся в списке и больше не можем ничего загрузить, т.к. это конечные данные
-        this.dispatchProps.getProducts(key  ? LoadState.allIsLoaded : LoadState.firstLoad );
+        this.dispatchProps.getProducts(key  ? LoadState.idle : LoadState.firstLoad );
     }
 
     render(): JSX.Element {
         const cafe = this.stateProps.cafe;
-        const {products, error, key} = this.stateProps;
+        const {products, error, loadState} = this.stateProps;
 
         return(
             <View style={styles.container}>
@@ -90,7 +91,7 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
                 <FlatListWrapper
                     contentContainerStyle={styles.containerFlatList}
                     data={products != undefined ? products : []} //TODO: products не могут быть undefined
-                    loadState={key ? LoadState.allIsLoaded : LoadState.firstLoad} //TODO: Почему нельзя передавать весь loadState?
+                    loadState={loadState}
                     keyExtractor={defaultIdExtractor}
                     errorText={error}
                     EmptyComponent={this.renderEmptyComponent}
@@ -113,7 +114,7 @@ export class CafePage extends BaseReduxComponent<IStateProps, IDispatchProps, IP
 
     private renderEmptyComponent = (): JSX.Element => {
         return (
-            <EmptyComponent title={"Список пуст"}/> //TODO: Должно быть вынесено в константу
+            <EmptyComponent title={localization.empty.emptyList}/>
         );
     };
 

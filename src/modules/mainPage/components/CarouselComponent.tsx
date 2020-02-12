@@ -4,33 +4,24 @@ import {Image, ImageStyle, Text, TextStyle, TouchableOpacity, View, ViewStyle} f
 import {styleSheetCreate} from "../../../common/utils";
 import {Colors, Fonts} from "../../../core/theme";
 import {ImageSource} from "../../../common/utils/ImageSource";
-import {localization} from "../../../common/localization/localization";
-import {ImageResources} from "../../../common/ImageResources.g";
 
 interface IProps {
-    id: string | undefined;
+    id: string;
     title: string;
     address: string;
     imageSource: string | undefined;
     onPress?: (id: string) => void;
 }
 
-//TODO: Компонент может работать даже если в ID приёдет undefined? Почему вообще может быть undefined?
-export class MainPageComponent extends PureComponent<IProps> {
+export class CarouselComponent extends PureComponent<IProps> {
     render(): JSX.Element {
-        const {title, address, imageSource, onPress} = this.props;
+        const {title, imageSource, onPress} = this.props;
 
         return (
             <TouchableOpacity style={styles.container} onPress={this.onPress} disabled={onPress == null}>
                 <Image style={styles.image} source={ImageSource.create(imageSource)!}/>
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>{title}</Text>
-                    <Text>{localization.main.weAreLocated}</Text>
-                    <Text style={styles.address}>{address}</Text>
-                    <View style={styles.readMoreContainer}>
-                        <Text style={styles.textReadMore}>{localization.main.readMore}</Text>
-                        <Image style={styles.imgReadMore} source={ImageResources.icon_read_more}/>
-                    </View>
                 </View>
             </TouchableOpacity>
         );
@@ -42,17 +33,20 @@ export class MainPageComponent extends PureComponent<IProps> {
 
 const styles = styleSheetCreate({
     container: {
+        borderRadius: 20,
         marginBottom: 7,
         backgroundColor: Colors.white,
-        flexDirection: "row",
+        flexDirection: "column",
+        alignItems: "center",
         elevation: 5,
-        borderRadius: 20,
-        marginHorizontal: 5,
     }as ViewStyle,
     image: {
-        width: 140,
-        height: 140,
-        borderRadius: 20,
+        width: 215,
+        height: 165,
+        marginTop: 5,
+        marginHorizontal: 10,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     } as ImageStyle,
     textContainer: {
         flexDirection: "column",
@@ -66,24 +60,4 @@ const styles = styleSheetCreate({
         color: Colors.browny,
         marginBottom: 5,
     }as TextStyle,
-    address: {
-        fontSize: 14,
-        fontFamily: Fonts.regular,
-        color: Colors.black,
-    } as TextStyle,
-    readMoreContainer: {
-       flexDirection: "row",
-       paddingTop: 30,
-       paddingLeft: 170
-    } as ViewStyle,
-    imgReadMore: {
-       width: 20,
-       height: 20,
-    } as ImageStyle,
-    textReadMore: {
-        fontSize: 13,
-        fontFamily: Fonts.regular,
-        color: Colors.black,
-    } as TextStyle,
-
 });
