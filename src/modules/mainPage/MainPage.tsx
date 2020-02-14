@@ -20,9 +20,9 @@ import SwitchSelector from "react-native-switch-selector";
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import {EmptyComponent} from "../../common/components/EmptyComponent";
 import Geolocation from "@react-native-community/geolocation";
-import {PERMISSIONS, request} from "react-native-permissions";
 import Carousel, {CarouselStatic} from "react-native-snap-carousel";
 import {CarouselComponent} from "./components/CarouselComponent";
+import {getGeoLocationPermission} from "../../common/helpers/permissions";
 
 interface IStateProps {
     cafes: CafeInfo[];
@@ -72,7 +72,7 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
     carouselRef = new Ref<CarouselStatic<TouchableOpacity>>();
     componentDidMount(): void {
         this.dispatchProps.getCafes();
-        this.requestLocationPermission();
+        getGeoLocationPermission(this.locateCurrentPosition);
     }
 
     constructor(props: IEmpty) {
@@ -201,14 +201,6 @@ export class MainPage extends BaseReduxComponent<IStateProps, IDispatchProps, IS
         );
       };
 
-    private requestLocationPermission = async (): Promise<void> => {
-        //TODO: Для этого должен быть создан отдельный файл который должен проверять налачие доступов
-        const response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-        console.log("Android: " + response);
-        if (response === "granted") {
-            this.locateCurrentPosition();
-        }
-    };
 
     private locateCurrentPosition = (): void => {
         Geolocation.getCurrentPosition(position => {
